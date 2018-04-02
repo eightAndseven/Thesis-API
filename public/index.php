@@ -7,7 +7,6 @@ require '../src/config/db.php';
 require '../src/config/hasher.php';
 require '../src/objects/objects.php';
 
-
 $configuration = [
     'settings' => [
         'displayErrorDetails' => true,
@@ -22,9 +21,6 @@ $app->get('/hello/{name}', function (Request $request, Response $response, array
 
     return $response;
 });
-
-//customer routes
-// require '../src/routes/customers.php';
 
 //powerboard routes
 require '../src/routes/powerboard.php';

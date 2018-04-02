@@ -2,13 +2,6 @@
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 
-$configuration = [
-    'settings' => [
-        'displayErrorDetails' => true,
-    ],
-];
-$c = new \Slim\Container($configuration);
-$app = new \Slim\App($c);
 
 /**
  * Login user with route: http://piboard/slimapi/api/powerboard/login
@@ -333,10 +326,6 @@ $app->post('/api/powerboard/switch_socket',function($request, $response){
     }
     
 });
-
-
-
-
 
 // $app->get('/api/powerboard/activities/{id}',function(){
 
