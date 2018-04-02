@@ -214,8 +214,10 @@ class WeeklyConsumed{
 
 
 /**
- * WeeklyConsumed object has the following functions: 
- * 1. 
+ * Socket object has the following functions: 
+ * 1. readSocketInfo(),
+ * 2. stateOnOffSocket(),
+ * 3. socketOnOff()
  */
 class Socket{
     //database local variable
@@ -245,7 +247,7 @@ class Socket{
         switch($pin){
             case "1":
                 // exec("gpio read ".$this->socket[0], $gpiostatus);
-                $gpiostatus = '1';
+                $gpiostatus = '0';
                 $status = $gpiostatus;
                 break;
             case "2":
@@ -337,5 +339,142 @@ class Socket{
             $status = "Turned off socket " .$pin;
         }
         return $status;
+    }
+}
+
+/**
+ * Schedule object has the following functions: 
+ */
+
+class Schedule{
+    //database properties
+    private $conn;
+    private $table_name = "schedule";
+
+    //object properties
+    public $id;
+    public $socket_id;
+    public $user_id;
+    public $user_username;
+    public $date_time_posted;
+    public $date_time_sched;
+    public $date_time_now;
+    public $action;
+    public $state;
+    public $description;
+
+    /**
+     * Schedule Constructor
+     */
+    public function __construct($db){
+        $this->conn = $db;
+    }
+
+    /**
+     * function to save schedule
+     */
+    function scheduleSocket(){
+        //initialize vars
+        $this->state = "READY";
+        $this->description = "Socket ".$this->socket_id." to be turned ".$this->action." at ".$this->date_time_sched." by ".$this->user_username;
+
+        //query insert record
+        $query = "INSERT INTO ".$this->table_name." SET socket_id=:socket_id, user_id=:user_id, user_username=:user_username, date_time_posted=:post, date_time_sched=:sched, action=:action, state=:state, description=:description";
+
+        //prepare query
+        $stmt = $this->conn->prepare($query);
+
+        //sanitize
+        $this->socket_id=htmlspecialchars(strip_tags($this->socket_id));
+        $this->user_id=htmlspecialchars(strip_tags($this->user_id));
+        $this->user_username=htmlspecialchars(strip_tags($this->user_username));
+        $this->date_time_posted=htmlspecialchars(strip_tags($this->date_time_posted));
+        $this->date_time_sched=htmlspecialchars(strip_tags($this->date_time_sched));
+        $this->action=htmlspecialchars(strip_tags($this->action));
+        $this->state=htmlspecialchars(strip_tags($this->state));
+        $this->description=htmlspecialchars(strip_tags($this->description));
+
+        //bind to prepare stmt
+        $stmt->bindParam(":socket_id", $this->socket_id);
+        $stmt->bindParam(":user_id", $this->user_id);
+        $stmt->bindParam(":user_username", $this->user_username);
+        $stmt->bindParam(":post", $this->date_time_posted);
+        $stmt->bindParam(":sched", $this->date_time_sched);
+        $stmt->bindParam(":action", $this->action);
+        $stmt->bindParam(":state", $this->state);
+        $stmt->bindParam(":description", $this->description);
+        try{
+            //execute stmt
+            if($stmt->execute()){
+                $return_arr = array(
+                    "success"=>true,
+                    "description"=>$this->description
+                );
+                return $return_arr;
+            }else{
+                $return_arr = array(
+                    "success"=>false,
+                    "description"=>"ERROR"
+                );
+                return $return_arr;
+            }
+        }catch(Exception $e){
+            $return_arr = array(
+                "success"=>false,
+                "description"=>"ERROR"
+            );
+            return $return_arr;
+        }
+    }
+    /**
+     * function to check if socket has schedule
+     */
+    function getSocketSchedule(){
+        try{
+            
+            //sql to get socket_id, date_time_sched, action, user_username from schedule
+            $sql = "SELECT id, socket_id, date_time_sched, action, user_username FROM ".$this->table_name." WHERE socket_id=".$this->socket_id." AND date_time_sched>'".$this->date_time_now."' AND state='READY'";
+            
+            //query sql and return statement
+            $stmt = $this->conn->query($sql);
+
+            return $stmt;
+        }catch(Exception $e){
+            return -1;
+        }
+    }
+    /**
+     * function to delete a scheduled process
+     */
+    function deleteSocketSchedule(){
+        try{
+
+            //sql to delete a schedule job
+            $sql = "DELETE FROM ".$this->table_name." WHERE id=:id AND socket_id=:socket_id AND user_id=:user_id AND user_username=:user_username";
+
+            //prepare query
+            $stmt = $this->conn->prepare($sql);
+
+            //sanitize
+            $this->id=htmlspecialchars(strip_tags($this->id));
+            $this->socket_id=htmlspecialchars(strip_tags($this->socket_id));
+            $this->user_id=htmlspecialchars(strip_tags($this->user_id));
+            $this->user_username=htmlspecialchars(strip_tags($this->user_username));
+
+            //bind to prepare stmt
+            $stmt->bindParam(":id", $this->id);
+            $stmt->bindParam(":socket_id", $this->socket_id);
+            $stmt->bindParam(":user_id", $this->user_id);
+            $stmt->bindParam(":user_username", $this->user_username);
+
+            //execute sql
+            if($stmt->execute()){
+                return true;
+            }else{
+                return false;
+            }
+        }catch(Exception $e){
+
+        }
     }
 }

@@ -239,17 +239,52 @@ $app->get('/api/powerboard/socket_status/{socket}',function($request, $response)
     $socket->socket_id = $socket_num;
     $read = $socket->readSocketInfo();
     if($read != "ERROR"){
-        $socket_status["socket"] = array(
-            "socket"=>$socket_num,
-            "socket_status"=>$read
-        );
-        $message_array["response"] = array(
-            "success"=>true,
-            "date_time"=>$date_time,
-            "message" => "Socket $socket_num is turned $read"
-        );
-        return $response->withHeader('Content-Type', 'application/json')
-            ->write(json_encode(array_merge($message_array, $socket_status)));
+        //check if socket has scheduled job
+        $schedule = new Schedule($db);
+        $schedule->socket_id = $socket->socket_id;
+        $schedule->date_time_now = $date_time;
+        $stmt = $schedule->getSocketSchedule();
+        $count = $stmt->rowCount();
+        if($count == 1){
+            $row = $stmt->fetch();
+            $socket_status["socket"] = array(
+                "socket"=>$socket_num,
+                "socket_status"=>$read,
+                "schedule"=>true,
+                "sched_id"=>$row[0],
+                "date_sched" => $row[2],
+                "socket_state_sched" => $row[3],
+                "sched_user"=>$row[4]
+            );
+            $message_array["response"] = array(
+                "success"=>true,
+                "date_time"=>$date_time,
+                "message" => "Socket $socket_num is turned $read"
+            );
+            return $response->withHeader('Content-Type', 'application/json')
+                ->write(json_encode(array_merge($message_array, $socket_status)));
+        }elseif($count == 0){
+            $socket_status["socket"] = array(
+                "socket"=>$socket_num,
+                "schedule"=>false,
+                "socket_status"=>$read
+            );
+            $message_array["response"] = array(
+                "success"=>true,
+                "date_time"=>$date_time,
+                "message" => "Socket $socket_num is turned $read"
+            );
+            return $response->withHeader('Content-Type', 'application/json')
+                ->write(json_encode(array_merge($message_array, $socket_status)));
+        }else{
+            $message_array["response"] = array(
+                "success"=>true,
+                "date_time"=>$date_time,
+                "message" => "Something went wrong :("
+            );
+            return $response->withHeader('Content-Type', 'application/json')
+                ->write(json_encode($message_array));
+        }
     }else{
         $message_array["response"] = array(
             "success"=>false,
@@ -262,7 +297,7 @@ $app->get('/api/powerboard/socket_status/{socket}',function($request, $response)
 });
 
 /**
- * Get socket info for socket {id} in route: http://piboard/slimapi/public/api/powerboard/socket_status/{socket}
+ * Switch socket state in route: http://piboard/slimapi/public/api/powerboard/socket_status/{socket}
  */
 $app->post('/api/powerboard/switch_socket',function($request, $response){
     //get request parameter
@@ -312,21 +347,195 @@ $app->post('/api/powerboard/switch_socket',function($request, $response){
             return $response->withHeader('Content-Type', 'application/json')
                 ->write(json_encode(array_merge($message_array, $socket_arr, $activity_arr)));    
         }else{
-
+            $socket_arr["socket"] = array(
+                "socket" => $socket->socket_id,
+                "socket_state" => $socket->socket_switch
+            );
+            $message_array["response"] = array(
+                "success"=>false,
+                "date_time"=>$date_time,
+                "message" => "$msg"
+            );
+            return $response->withHeader('Content-Type', 'application/json')
+                ->write(json_encode($message_array));
         }
-        
     }else{
         $message_array["response"] = array(
             "success"=>false,
             "date_time"=>$date_time,
-            "message" => "Bad Request asd"
+            "message" => "Bad Request"
         );
         return $response->withHeader('Content-Type', 'application/json')
             ->write(json_encode($message_array));
     }
-    
 });
 
-// $app->get('/api/powerboard/activities/{id}',function(){
+/**
+ * Schedule socket for turn off in route: http://piboard/slimapi/public/api/powerboard/socket_status/{socket}
+ */
+$app->post('/api/powerboard/schedule',function($request, $response){
+    //get request parameter
+    $socket_num = $request->getParam('socket');
+    $socket_switch = $request->getParam('switch');
+    $user_id = $request->getParam('user_id');
+    $user_username = $request->getParam('user_username');
+    $time_sched = $request->getParam('time');
+    $date_time = date('Y-m-d H:i:s');
+    $time_now = time();
 
-// });
+    //get database connection
+    $db = new Database();
+    $db = $db->connectDB();
+
+    try{
+        $unix_time = strtotime($time_sched);
+        if($time_now >= $unix_time){
+            //unix time add a day if time now is already past
+            $unix_time = $unix_time + 86400;
+        }
+        $date_time_sched = date("Y-m-d H:i:s", $unix_time);
+        $schedule = new Schedule($db);
+        $schedule->socket_id = $socket_num;
+        $schedule->date_time_posted = $date_time;
+        $schedule->date_time_sched = $date_time_sched;
+        $schedule->action = $socket_switch;
+        $schedule->user_id = $user_id;
+        $schedule->user_username = $user_username;
+        $sched_exec = $schedule->scheduleSocket();
+
+        if($sched_exec["success"]){
+            $activity = new Activity($db);
+            $activity->user_id = $schedule->user_id;
+            $activity->user_username = $schedule->user_username;
+            $activity->date_time = $schedule->date_time_posted;
+            $activity->user_activity = $sched_exec["description"];
+            $save_activity = $activity->saveActivity();
+            
+            $socket_arr["socket"] = array(
+                "schedule" => $sched_exec["success"],
+                "socket" => $schedule->socket_id,
+                "date_sched" => $schedule->date_time_sched,
+                "socket_state_sched" => $schedule->action
+            );
+            $activity_arr["activity"] = array(
+                "uid"=>$activity->user_id,
+                "username"=>$activity->user_username,
+                "date_time"=>$activity->date_time,
+                "activity"=>$activity->user_activity
+            );
+            $message_array["response"] = array(
+                "success"=>true,
+                "date_time"=>$date_time,
+                "message" => "Socket $socket_num will be turned $socket_switch at $date_time_sched"
+            );
+            return $response->withHeader('Content-Type', 'application/json')
+                ->write(json_encode(array_merge($message_array, $socket_arr, $activity_arr)));
+        }else{
+            $socket_arr["socket"] = array(
+                "schedule" => $sched_exec["success"],
+                "socket" => $schedule->socket_id,
+                "date_sched" => $schedule->date_time_sched,
+                "socket_state_sched" => $socket->socket_switch
+            );
+            $message_array["response"] = array(
+                "success"=>false,
+                "date_time"=>$date_time,
+                "message" => "Saved"
+            );
+            return $response->withHeader('Content-Type', 'application/json')
+                ->write(json_encode($message_array));
+        }
+    }catch(Exception $e){
+        $message_array["response"] = array(
+            "success"=>false,
+            "date_time"=>$date_time,
+            "message" => "Bad Request"
+        );
+        return $response->withHeader('Content-Type', 'application/json')
+            ->write(json_encode($message_array));
+    }
+});
+
+/**
+ * Delete a schedule process of a socket in route: http://piboard/slimapi/public/api/powerboard/cancel_sched
+ */
+$app->delete('/api/powerboard/cancel_sched', function($request, $response){
+    //get request parameter
+    $sched_id = $request->getParam('sched_id');
+    $socket_num = $request->getParam('socket');
+    $user_id = $request->getParam('user_id');
+    $user_username = $request->getParam('user_username');
+    $date_time = date('Y-m-d H:i:s');
+
+    //get database connection
+    $db = new Database();
+    $db = $db->connectDB();
+
+    $schedule = new Schedule($db);
+    $schedule->id = $sched_id;
+    $schedule->socket_id = $socket_num;
+    $schedule->user_id = $user_id;
+    $schedule->user_username = $user_username;
+    $schedule->date_time_now = $date_time;
+    $stmt = $schedule->getSocketSchedule();
+    $del_sched = $schedule->deleteSocketSchedule();
+    // $del_sched = true;
+
+    if($del_sched){
+        $count = $stmt->rowCount();
+        if($count == 1){
+            $row = $stmt->fetch();
+            $activity = new Activity($db);
+            $activity->user_id = $schedule->user_id;
+            $activity->user_username = $schedule->user_username;
+            $activity->date_time = $date_time;
+            $activity->user_activity = $schedule->user_username . " cancelled turn " .$row[3]. " at ". $row[2];
+            $save_activity = $activity->saveActivity();
+
+            $socket_arr["socket"] = array(
+                "schedule" => false,
+                "sched_id" => $schedule->id,
+                "socket" => $schedule->socket_id,
+                "date_sched" => $row[2],
+                "socket_state_sched" => "CANCELLED"
+            );
+            $activity_arr["activity"] = array(
+                "uid"=>$activity->user_id,
+                "username"=>$activity->user_username,
+                "date_time"=>$activity->date_time,
+                "activity"=>$activity->user_activity
+            );
+            $message_array["response"] = array(
+                "success"=>true,
+                "date_time"=>$date_time,
+                "message" => $activity->user_activity
+            );
+            return $response->withHeader('Content-Type', 'application/json')
+                ->write(json_encode(array_merge($message_array, $socket_arr, $activity_arr)));
+        }else{
+            // echo "hello";
+            $socket_arr["socket"] = array(
+                "schedule" => false,
+                "sched_id" => $schedule->id,
+                "socket" => $schedule->socket_id,
+                "date_sched" => $schedule->date_time_sched,
+                "socket_state_sched" => "CANCELLED"
+            );
+            $message_array["response"] = array(
+                "success"=>false,
+                "date_time"=>$date_time,
+                "message" => $activity->user_activity
+            );
+            return $response->withHeader('Content-Type', 'application/json')
+                ->write(json_encode(array_merge($message_array, $socket_arr)));
+        }
+    }else{
+        $message_array["response"] = array(
+            "success"=>false,
+            "date_time"=>$date_time,
+            "message" => "Bad Request"
+        );
+        return $response->withHeader('Content-Type', 'application/json')
+            ->write(json_encode($message_array));
+    }
+});
