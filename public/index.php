@@ -16,6 +16,13 @@ $configuration = [
 $c = new \Slim\Container($configuration);
 $app = new \Slim\App($c);
 
+$app->get('/hello/{name}', function (Request $request, Response $response, array $args) {
+    $name = $args['name'];
+    $response->getBody()->write("Hello, $name");
+
+    return $response;
+});
+
 //customer routes
 // require '../src/routes/customers.php';
 
