@@ -2,6 +2,23 @@
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 
+/**
+ * Summary Routes:
+ * POST
+ * 1.  /api/powerboard/login
+ * 6.  /api/powerboard/switch_socket
+ * 7.  /api/powerboard/schedule
+ * GET
+ * 2.  /api/powerboard/activities
+ * 3.  /api/powerboard/daily_consumed/{socket}
+ * 4.  /api/powerboard/weekly_consumed/{socket}
+ * 5.  /api/powerboard/socket_status/{socket}
+ * 9.  /api/powerboard/userinfo/{id}
+ * PUT
+ * 10. /api/powerboard/changepassword
+ * DELETE
+ * 8.  /api/powerboard/cancel_sched
+ */
 
 /**
  * Login user with route: http://piboard/slimapi/api/powerboard/login
@@ -479,7 +496,6 @@ $app->delete('/api/powerboard/cancel_sched', function($request, $response){
     $schedule->date_time_now = $date_time;
     $stmt = $schedule->getSocketSchedule();
     $del_sched = $schedule->deleteSocketSchedule();
-    // $del_sched = true;
 
     if($del_sched){
         $count = $stmt->rowCount();
@@ -513,7 +529,6 @@ $app->delete('/api/powerboard/cancel_sched', function($request, $response){
             return $response->withHeader('Content-Type', 'application/json')
                 ->write(json_encode(array_merge($message_array, $socket_arr, $activity_arr)));
         }else{
-            // echo "hello";
             $socket_arr["socket"] = array(
                 "schedule" => false,
                 "sched_id" => $schedule->id,
@@ -538,4 +553,115 @@ $app->delete('/api/powerboard/cancel_sched', function($request, $response){
         return $response->withHeader('Content-Type', 'application/json')
             ->write(json_encode($message_array));
     }
+});
+
+/**
+ * Get User Info in route: http://piboard/slimapi/public/api/powerboard/userinfo/id
+ */
+$app->get('/api/powerboard/userinfo/{id}', function($request, $response){
+    //get request parameter
+    $uid = $request->getAttribute('id');
+    $date_time = date('Y-m-d H:i:s');
+
+    //get database connection
+    $db = new Database();
+    $db = $db->connectDB();
+
+    $user = new User($db);
+    $user->id = $uid;
+    $stmt = $user->getUserInfo();
+
+    $count = $stmt->rowCount();
+
+    if($count == 1){
+        $row = $stmt->fetch();
+        extract($row);
+        $user_array["user"] = array(
+            "id" => $id,
+            "name" => $name,
+            "username" => $username
+        );
+        $message_array["response"] = array(
+            "success"=>true,
+            "date_time"=>$date_time,
+            "message" => "Retrieved user info of $id"
+        );
+        return $response->withHeader('Content-Type', 'application/json')
+            ->write(json_encode(array_merge($message_array, $user_array)));
+    }else{
+        $message_array["response"] = array(
+            "success"=>false,
+            "date_time"=>$date_time,
+            "message" => "Bad Request"
+        );
+        return $response->withHeader('Content-Type', 'application/json')
+            ->write(json_encode($message_array));
+    }
+});
+
+/**
+ * Change Password if User in route: 
+ */
+$app->put('/api/powerboard/changepassword', function($request, $response){
+    //get request parameter
+    $user_id = $request->getParam('user_id');
+    $old_password = $request->getParam('old_password');
+    $new_password = $request->getParam('new_password');
+    $con_password = $request->getParam('con_password');
+    $date_time = date('Y-m-d H:i:s');
+    
+    //hash password
+    $hash = new Hasher();
+    $old_password = $hash->setPassword($old_password);
+    $new_password = $hash->setNewPassword($new_password);
+    $hash = $hash->HashtwoPassword();
+
+    //get database connection
+    $db = new Database();
+    $db = $db->connectDB();
+
+    $user = new User($db);
+    $user->id = $user_id;
+    $user->hashed_password = $hash["old_password"];
+    $user->new_password = $hash["new_password"];
+    $stmt = $user->checkPassword();
+    $count = $stmt->rowCount();
+    if(($new_password == $con_password) && $count == 1){
+        $change = $user->changePassword();
+        if($change){
+            $row = $stmt->fetch();
+            $user_array["user"] = array(
+                "id" => $user->id,
+                "name" => $row[2],
+                "username" => $row[1],
+                "changed_password" => true
+            );
+            $message_array["response"] = array(
+                "success"=>true,
+                "date_time"=>$date_time,
+                "message" => "Changed password of ".$row[2]
+            );
+            return $response->withHeader('Content-Type', 'application/json')
+                ->write(json_encode(array_merge($message_array, $user_array)));
+        }else{
+            $message_array["response"] = array(
+                "success"=>false,
+                "date_time"=>$date_time,
+                "message" => "Bad Request"
+            );
+            return $response->withHeader('Content-Type', 'application/json')
+                ->write(json_encode($message_array));
+        }
+    }else{
+        $message_array["response"] = array(
+            "success"=>false,
+            "date_time"=>$date_time,
+            "message" => "Bad Request"
+        );
+        return $response->withHeader('Content-Type', 'application/json')
+            ->write(json_encode($message_array));
+    }
+
+    
+
 });

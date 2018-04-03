@@ -15,6 +15,7 @@ class User{
     public $username;
     public $name;
     public $password;
+    public $new_password;
     public $hashed_password;
     /**
      * User Constructor
@@ -32,6 +33,9 @@ class User{
             return false;
         }
     }
+    /**
+     * function to check the user in the db using username and password
+     */
     function loginUser(){
         try{
             //sql to get id and username with object username and password
@@ -50,6 +54,60 @@ class User{
 
         }catch(PDOEXCEPTION $e){
             echo $e->getMessage();
+        }
+    }
+    /**
+     * function to get user information
+     */
+    function getUserInfo(){
+        try{
+            //sql string to get id, username, name with object id
+            $sql = "SELECT id, username, name FROM ".$this->table_name." WHERE id=".$this->id;
+
+            //execute statement
+            $stmt = $this->conn->query($sql);
+            return $stmt;
+        }catch(PDOEXCEPTION $e){
+            
+        }
+    }
+    /**
+     * function to check if password is currently the password
+     */
+    function checkPassword(){
+        try{
+            //sql string to get id and username
+            $sql = "SELECT id, username, name FROM ".$this->table_name." WHERE id=".$this->id." AND password='".$this->hashed_password."'";
+            echo $sql;
+            //execute statement
+            $stmt = $this->conn->query($sql);
+            return $stmt;
+        }catch(PDOEXCEPTION $e){
+
+        }
+    }
+
+    
+    /**
+     * function to change password
+     */   
+    function changePassword(){
+        try{
+            $sql = "UPDATE ".$this->table_name." SET password=:password WHERE id=:id AND password=:old_pass";
+
+            $stmt = $this->conn->prepare($sql);
+            //bind to prepare stmt
+            $stmt->bindParam(":password", $this->new_password);
+            $stmt->bindParam(":id", $this->id);
+            $stmt->bindParam(":old_pass", $this->hashed_password);
+
+            if($stmt->execute()){
+                return true;
+            }else{
+                return false;
+            }
+        }catch(PDOEXCEPTION $e){
+            return false;
         }
     }
 }
@@ -345,7 +403,6 @@ class Socket{
 /**
  * Schedule object has the following functions: 
  */
-
 class Schedule{
     //database properties
     private $conn;
@@ -478,3 +535,4 @@ class Schedule{
         }
     }
 }
+

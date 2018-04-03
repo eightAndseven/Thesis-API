@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 02, 2018 at 05:08 PM
+-- Generation Time: Apr 03, 2018 at 12:59 PM
 -- Server version: 10.1.25-MariaDB
 -- PHP Version: 7.1.7
 
@@ -57,7 +57,20 @@ INSERT INTO `activity` (`id`, `user_activity`, `user_id`, `user_username`, `date
 (14, 'Turn on socket 1', 1, 'admin', '2018-04-02 14:56:29'),
 (15, 'Turned on socket ', 0, 'admin', '2018-04-02 16:11:03'),
 (16, 'Turned on socket ', 0, 'admin', '2018-04-02 16:12:59'),
-(17, 'Turned on socket ', 0, 'admin', '2018-04-02 22:34:13');
+(17, 'Turned on socket ', 0, 'admin', '2018-04-02 22:34:13'),
+(18, 'Socket 1 to be turned off at 1970-01-02 08:00:00 by admin', 1, 'admin', '2018-04-03 02:00:05'),
+(19, 'Socket 1 to be turned off at 1970-01-02 08:00:00 by admin', 1, 'admin', '2018-04-03 02:01:22'),
+(20, 'Socket 4 to be turned off at 1970-01-02 08:00:00 by admin', 1, 'admin', '2018-04-03 02:03:10'),
+(21, 'Socket 3 to be turned off at 1970-01-02 08:00:00 by admin', 1, 'admin', '2018-04-03 02:05:09'),
+(22, 'Socket 3 to be turned off at 2018-04-03 03:00:00 by admin', 1, 'admin', '2018-04-03 02:07:13'),
+(23, 'Socket 3 to be turned off at 2018-04-04 00:00:00 by admin', 1, 'admin', '2018-04-03 02:07:28'),
+(24, 'Socket 1 to be turned off at 2018-04-03 03:00:00 by admin', 1, 'admin', '2018-04-03 02:36:59'),
+(25, 'Socket 4 to be turned off at 2018-04-03 04:00:00 by admin', 1, 'admin', '2018-04-03 03:37:18'),
+(26, 'Socket 4 to be turned off at 2018-04-03 04:00:00 by admin', 1, 'admin', '2018-04-03 03:38:07'),
+(27, 'admin cancelled turn off at 2018-04-03 04:00:00', 1, 'admin', '0000-00-00 00:00:00'),
+(28, 'admin cancelled turn off at 2018-04-03 04:00:00', 1, 'admin', '0000-00-00 00:00:00'),
+(29, 'Socket 1 to be turned off at 2018-04-03 04:00:00 by admin', 1, 'admin', '2018-04-03 03:46:00'),
+(30, 'admin cancelled turn off at 2018-04-03 04:00:00', 1, 'admin', '2018-04-03 03:46:34');
 
 -- --------------------------------------------------------
 
@@ -5850,6 +5863,24 @@ INSERT INTO `power_weekly` (`id`, `socket_id`, `watt_cons`, `date_from`, `date_t
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `schedule`
+--
+
+CREATE TABLE `schedule` (
+  `id` int(11) NOT NULL,
+  `socket_id` int(11) NOT NULL,
+  `date_time_posted` datetime NOT NULL,
+  `date_time_sched` datetime NOT NULL,
+  `action` varchar(5) NOT NULL,
+  `state` varchar(20) DEFAULT NULL,
+  `description` text,
+  `user_id` int(11) NOT NULL,
+  `user_username` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `socket`
 --
 
@@ -5890,8 +5921,8 @@ CREATE TABLE `user_table` (
 --
 
 INSERT INTO `user_table` (`id`, `username`, `name`, `password`) VALUES
-(1, 'admin', 'Admin', '$1$P0w3rbo@$M7y8mf4ru5HpWGgiD9MvD0'),
-(23, 'Hallelujah', 'Jay Star', '$1$P0w3rbo@$YlWaXzoNzJjntev9HRw9D0'),
+(1, 'admin', 'Admin', '$1$P0w3rbo@$/s3efAwJUZmbCr9Q4l.t71'),
+(23, 'Hallelujaha', 'Jay Star', '$1$P0w3rbo@$YlWaXzoNzJjntev9HRw9D0'),
 (24, 'Hallelujah88', 'Jay Star', '$1$P0w3rbo@$HlONNrk/n6FlmV4lI5MaB.'),
 (25, 'reinyear', 'Reinier Santos', '$1$P0w3rbo@$FFpTfD0cZ8dGN/e0L6EBM.');
 
@@ -5924,6 +5955,12 @@ ALTER TABLE `power_weekly`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `schedule`
+--
+ALTER TABLE `schedule`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `socket`
 --
 ALTER TABLE `socket`
@@ -5943,7 +5980,7 @@ ALTER TABLE `user_table`
 -- AUTO_INCREMENT for table `activity`
 --
 ALTER TABLE `activity`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 --
 -- AUTO_INCREMENT for table `power_con`
 --
@@ -5959,6 +5996,11 @@ ALTER TABLE `power_daily`
 --
 ALTER TABLE `power_weekly`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=71;
+--
+-- AUTO_INCREMENT for table `schedule`
+--
+ALTER TABLE `schedule`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `user_table`
 --
