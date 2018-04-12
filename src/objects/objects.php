@@ -341,32 +341,32 @@ class Socket{
         switch($pin){
             case "1":
                 exec("gpio read ".$this->socket[0], $gpiostatus);
-                $gpiostatus = '0';
+                // $gpiostatus = '0';
                 $status = $gpiostatus;
                 break;
             case "2":
                 exec("gpio read ".$this->socket[1], $status);
-                $gpiostatus = '1';
+                // $gpiostatus = '1';
                 $status = $gpiostatus;
                 break;
             case "3":
                 exec("gpio read ".$this->socket[2], $status);
-                $gpiostatus = '1';
+                // $gpiostatus = '1';
                 $status = $gpiostatus;
                 break;
             case "4":
                 exec("gpio read ".$this->socket[3], $status);
-                $gpiostatus = '0';
+                // $gpiostatus = '0';
                 $status = $gpiostatus;
                 break;
             case "5":
                 exec("gpio read ".$this->socket[4], $status);
-                $gpiostatus = '0';
+                // $gpiostatus = '0';
                 $status = $gpiostatus;
                 break;
             case "6":
                 exec("gpio read ".$this->socket[5], $status);
-                $gpiostatus = '0';
+                // $gpiostatus = '0';
                 $status = $gpiostatus;
                 break;
             default:
