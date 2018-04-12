@@ -390,27 +390,27 @@ class Socket{
         $status;
         switch($pin){
             case "1":
-                $msg = $this->socketOnOff($this->socket1, $state);
+                $msg = $this->socketOnOff($this->socket[0], $state);
                 $status = $msg;
                 break;
             case "2":
-                $msg = $this->socketOnOff($this->socket2, $state);
+                $msg = $this->socketOnOff($this->socket[1], $state);
                 $status = $msg;
                 break;
             case "3":
-                $msg = $this->socketOnOff($this->socket3, $state);
+                $msg = $this->socketOnOff($this->socket[2], $state);
                 $status = $msg;
                 break;
             case "4":
-                $msg = $this->socketOnOff($this->socket4, $state);
+                $msg = $this->socketOnOff($this->socket[3], $state);
                 $status = $msg;
                 break;
             case "5":
-                $msg = $this->socketOnOff($this->socket5, $state);
+                $msg = $this->socketOnOff($this->socket[4], $state);
                 $status = $msg;
                 break;
             case "6":
-                $msg = $this->socketOnOff($this->socket6, $state);
+                $msg = $this->socketOnOff($this->socket[5], $state);
                 $status = $msg;
                 break;
             default:
