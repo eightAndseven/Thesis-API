@@ -4,6 +4,8 @@
  * User object has following functions:
  * 1. loginValidate()
  * 2. loginUser()
+ * 3. checkPassword()
+ * 4. changePassword()
  */
 class User{
 
@@ -215,11 +217,28 @@ class DailyConsumed{
         try{
             
             //sql to get id, user_activity, user_id, user_username, date_time FROM ACTIVITY
+            //https://stackoverflow.com/questions/12125904/select-last-n-rows-from-mysql
             $sql = "SELECT id, socket_id, watt_cons, date FROM ".$this->table_name." WHERE socket_id=".$this->socket_id." ORDER BY date DESC";
             
             //query sql and return statement
             $stmt = $this->conn->query($sql);
+            return $stmt;
+        }catch(Exception $e){
+            return null;
+        }
+    }
 
+    /**
+     * function to get 7 days for daily graph
+     */
+    function getDailyGraph(){
+        try{
+
+            ///sql to get last 7 days from power_daily asc
+            $sql = "SELECT id, socket_id, watt_cons, date FROM (SELECT * FROM ".$this->table_name." WHERE socket_id=".$this->socket_id." ORDER BY date DESC limit 7) sub ORDER BY date ASC";
+            
+            //query sql and return statement
+            $stmt = $this->conn->query($sql);
             return $stmt;
         }catch(Exception $e){
             return null;
@@ -268,6 +287,23 @@ class WeeklyConsumed{
             return null;
         }
     }
+
+    /**
+     * function to get 8 days for daily graph
+     */
+    function getWeeklyGraph(){
+        try{
+
+            ///sql to get last 7 days from power_daily asc
+            $sql = "SELECT id, socket_id, watt_cons, date_from, date_to FROM (SELECT * FROM ".$this->table_name." WHERE socket_id=".$this->socket_id." ORDER BY week_number DESC limit 7) sub ORDER BY week_number ASC";
+            
+            //query sql and return statement
+            $stmt = $this->conn->query($sql);
+            return $stmt;
+        }catch(Exception $e){
+            return null;
+        }
+    }
 }
 
 
@@ -304,32 +340,32 @@ class Socket{
         $status;
         switch($pin){
             case "1":
-                // exec("gpio read ".$this->socket[0], $gpiostatus);
+                exec("gpio read ".$this->socket[0], $gpiostatus);
                 $gpiostatus = '0';
                 $status = $gpiostatus;
                 break;
             case "2":
-                // exec("gpio read ".$this->socket[1], $status);
+                exec("gpio read ".$this->socket[1], $status);
                 $gpiostatus = '1';
                 $status = $gpiostatus;
                 break;
             case "3":
-                // exec("gpio read ".$this->socket[2], $status);
+                exec("gpio read ".$this->socket[2], $status);
                 $gpiostatus = '1';
                 $status = $gpiostatus;
                 break;
             case "4":
-                // exec("gpio read ".$this->socket[3], $status);
+                exec("gpio read ".$this->socket[3], $status);
                 $gpiostatus = '0';
                 $status = $gpiostatus;
                 break;
             case "5":
-                // exec("gpio read ".$this->socket[4], $status);
+                exec("gpio read ".$this->socket[4], $status);
                 $gpiostatus = '0';
                 $status = $gpiostatus;
                 break;
             case "6":
-                // exec("gpio read ".$this->socket[5], $status);
+                exec("gpio read ".$this->socket[5], $status);
                 $gpiostatus = '0';
                 $status = $gpiostatus;
                 break;
@@ -388,12 +424,12 @@ class Socket{
     function socketOnOff($pin, $state){
         $status;
         if($state == "on"){
-            // system("gpio mode ".$pin." out");
-            // system("gpio write ". $pin . " 0");
+            system("gpio mode ".$pin." out");
+            system("gpio write ". $pin . " 0");
             $status = "Turned on socket " .$pin;
         }else{
-            // system("gpio mode ".$pin." out");
-            // system("gpio write ". $pin . " 1");
+            system("gpio mode ".$pin." out");
+            system("gpio write ". $pin . " 1");
             $status = "Turned off socket " .$pin;
         }
         return $status;
@@ -433,7 +469,7 @@ class Schedule{
     function scheduleSocket(){
         //initialize vars
         $this->state = "READY";
-        $this->description = "Socket ".$this->socket_id." to be turned ".$this->action." at ".$this->date_time_sched." by ".$this->user_username;
+        $this->description = "Socket ".$this->socket_id." to be turned ".$this->action." at ".$this->date_time_sched;
 
         //query insert record
         $query = "INSERT INTO ".$this->table_name." SET socket_id=:socket_id, user_id=:user_id, user_username=:user_username, date_time_posted=:post, date_time_sched=:sched, action=:action, state=:state, description=:description";

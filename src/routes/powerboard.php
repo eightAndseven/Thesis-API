@@ -30,7 +30,8 @@ $app->post('/api/powerboard/login', function ($request, $response) {
     $date_time = date('Y-m-d H:i:s');
 
     //hash password
-    $hash = new Hasher($password);
+    $hash = new Hasher();
+    $password = $hash->setPassword($password);
     $hash = $hash->HashPassword();
 
     //get database
@@ -83,7 +84,7 @@ $app->post('/api/powerboard/login', function ($request, $response) {
  * Get user activities with route: http://piboard/slimapi/api/powerboard/activities
  */
 $app->get('/api/powerboard/activities',function($request, $response){
-    $date_time = date('Y-m-d H:i:s');
+    $date_time1 = date('Y-m-d H:i:s');
 
     //get database connection
     $db = new Database();
@@ -112,7 +113,7 @@ $app->get('/api/powerboard/activities',function($request, $response){
 
         $message_array["response"] = array(
             "success"=>true,
-            "date_time"=>$date_time,
+            "date_time"=>$date_time1,
             "message" => "$count user activities"
         );
         return $response->withHeader('Content-Type', 'application/json')
@@ -184,7 +185,7 @@ $app->get('/api/powerboard/daily_consumed/{socket}',function($request, $response
 });
 
 /**
- * Get daily wattage for socket {id} in route: http://piboard/slimapi/public/api/powerboard/weekly_consumed/{socket}
+ * Get weekly wattage for socket {id} in route: http://piboard/slimapi/public/api/powerboard/weekly_consumed/{socket}
  */
 $app->get('/api/powerboard/weekly_consumed/{socket}',function($request, $response){
     //get request parameter
@@ -600,7 +601,7 @@ $app->get('/api/powerboard/userinfo/{id}', function($request, $response){
 });
 
 /**
- * Change Password if User in route: 
+ * Change Password if User in route: http://piboard/slimapi/public/api/powerboard/changepassword
  */
 $app->put('/api/powerboard/changepassword', function($request, $response){
     //get request parameter
@@ -661,7 +662,121 @@ $app->put('/api/powerboard/changepassword', function($request, $response){
         return $response->withHeader('Content-Type', 'application/json')
             ->write(json_encode($message_array));
     }
+});
 
-    
+/**
+ * function to get api for daily graph for socket {socket} in route: http://piboard/slimapi/public/api/powerboard/changepassword
+ */
+$app->get('/api/powerboard/daily_graph/{socket}', function($request, $response){
+        //get request parameter
+        $socket = $request->getAttribute('socket');
+        $date_time = date('Y-m-d H:i:s');
+        //get database connection
+        $db = new Database();
+        $db = $db->connectDB();
+
+        //get object dailyconsumed
+        $daily = new DailyConsumed($db);
+        $daily->socket_id = $socket;
+        $stmt = $daily->getDailyGraph();
+        $count;
+        if($stmt != null){
+            $count = $stmt->rowCount();
+        }else{
+            $count = -1;
+        }
+        //if row is greater than 0
+        if($count > 0){
+            $consumed_arr['daily_graph'] = array();
+            while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
+                extract($row);
+                $format_date = strtotime($date);
+                $date_word = date("D", $format_date);
+                $consumed_item = array(
+                    "id"=>$id,
+                    "socket_id"=>$socket_id,
+                    "watt_consumed"=>$watt_cons,
+                    "date_format"=>$date_word,
+                    "date"=>$date
+                );
+                array_push($consumed_arr['daily_graph'], $consumed_item);
+            }
+            $message_array["response"] = array(
+                "socket"=>$socket,
+                "success"=>true,
+                "date_time"=>$date_time,
+                "message" => "$count daily graph for socket $socket"
+            );
+            return $response->withHeader('Content-Type', 'application/json')
+                ->write(json_encode(array_merge($message_array, $consumed_arr)));
+        }else{
+            $message_array['response'] = array(
+                "success"=>false,
+                "date_time"=>$date_time,
+                "message" => "No daily report"
+            );
+            return $response->withHeader('Content-Type', 'application/json')
+                ->write(json_encode($message_array));
+        }
+});
+
+/**
+ * function to get api for weekly graph for socket {socket} in route: http://piboard/slimapi/public/api/powerboard/weekly_graph/{socket}
+ */
+$app->get('/api/powerboard/weekly_graph/{socket}', function($request, $response){
+    //get request parameter
+    $socket = $request->getAttribute('socket');
+    $date_time = date('Y-m-d H:i:s');
+
+    //get database connection
+    $db = new Database();
+    $db = $db->connectDB();
+
+    //get object weekly
+    $weekly = new WeeklyConsumed($db);
+    $weekly->socket_id = $socket;
+    $stmt = $weekly->getWeeklyGraph();
+    if($stmt != null){
+        $count = $stmt->rowCount();
+    }else{
+        $count = -1;
+    }
+        //if row is greater than 0
+        if($count > 0){
+            $consumed_arr['weekly_graph'] = array();
+            while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
+                extract($row);
+                $date_from_format = strtotime($date_from);
+                $date_to_format = strtotime($date_to);
+                $date_from_word = date("M d", $date_from_format);
+                $date_to_word = date("M d", $date_to_format);
+                $date_format = $date_from_word." - ".$date_to_word;
+                $consumed_item = array(
+                    "id"=>$id,
+                    "socket_id"=>$socket_id,
+                    "watt_consumed"=>$watt_cons,
+                    "date_from"=>$date_from,
+                    "date_to"=>$date_to,
+                    "date_format"=>$date_format
+                );
+                array_push($consumed_arr['weekly_graph'], $consumed_item);
+            }
+            $message_array["response"] = array(
+                "socket"=>$socket,
+                "success"=>true,
+                "date_time"=>$date_time,
+                "message" => "$count weekly report for socket $socket"
+            );
+            return $response->withHeader('Content-Type', 'application/json')
+                ->write(json_encode(array_merge($message_array, $consumed_arr)));
+        }else{
+            $message_array['response'] = array(
+                "success"=>false,
+                "date_time"=>$date_time,
+                "message" => "No daily report"
+            );
+            return $response->withHeader('Content-Type', 'application/json')
+                ->write(json_encode($message_array));
+        }
 
 });

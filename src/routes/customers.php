@@ -2,13 +2,13 @@
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 
-$configuration = [
-    'settings' => [
-        'displayErrorDetails' => true,
-    ],
-];
-$c = new \Slim\Container($configuration);
-$app = new \Slim\App($c);
+// $configuration = [
+//     'settings' => [
+//         'displayErrorDetails' => true,
+//     ],
+// ];
+// $c = new \Slim\Container($configuration);
+// $app = new \Slim\App($c);
 
 
 //get all customers
@@ -16,7 +16,7 @@ $app->get('/api/customers', function(Request $request, Response $response){
     $sql = "SELECT * FROM customers";
     try{
         //get db
-        $db = new Database();
+        $db = new TestDb();
 
         //connect
         $db = $db->connectDB();
@@ -36,7 +36,7 @@ $app->get('/api/customer/{id}', function(Request $request, Response $response){
     $sql = "SELECT * FROM customers WHERE id=$id";
     try{
         //get db
-        $db = new Database();
+        $db = new TestDb();
 
         //connect
         $db = $db->connectDB();
@@ -65,7 +65,7 @@ $app->post('/api/customer/add', function(Request $request, Response $response){
 
     try{
         //get db
-        $db = new Database();
+        $db = new TestDb();
 
         //connect
         $db = $db->connectDB();
@@ -113,7 +113,7 @@ $app->put('/api/customer/update/{id}', function(Request $request, Response $resp
 
     try{
         //get db
-        $db = new Database();
+        $db = new TestDb();
 
         //connect
         $db = $db->connectDB();
@@ -141,7 +141,7 @@ $app->delete('/api/customer/delete/{id}', function(Request $request, Response $r
     $sql = "DELETE FROM customers WHERE id=$id";
     try{
         //get db
-        $db = new Database();
+        $db = new TestDb();
 
         //connect
         $db = $db->connectDB();

@@ -22,6 +22,9 @@ $app->get('/hello/{name}', function (Request $request, Response $response, array
     return $response;
 });
 
+//customers routes
+require '../src/routes/customers.php';
+
 //powerboard routes
 require '../src/routes/powerboard.php';
 $app->run();
