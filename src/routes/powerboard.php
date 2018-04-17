@@ -672,7 +672,7 @@ $app->put('/api/powerboard/changepassword', function($request, $response){
         $message_array["response"] = array(
             "success"=>false,
             "date_time"=>$date_time,
-            "message" => "Incorrect old password"
+            "message" => "Incorrect password"
         );
         return $response->withHeader('Content-Type', 'application/json')
             ->write(json_encode($message_array));
