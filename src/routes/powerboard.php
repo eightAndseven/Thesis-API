@@ -619,6 +619,7 @@ $app->get('/api/powerboard/userinfo/{id}', function($request, $response){
 $app->put('/api/powerboard/changepassword', function($request, $response){
     //get request parameter
     $user_id = $request->getParam('user_id');
+    $user_username = $request->getParam('user_username');
     $old_password = $request->getParam('old_password');
     $new_password = $request->getParam('new_password');
     $con_password = $request->getParam('con_password');
@@ -636,6 +637,7 @@ $app->put('/api/powerboard/changepassword', function($request, $response){
 
     $user = new User($db);
     $user->id = $user_id;
+    $user->username = $user_username;
     $user->hashed_password = $hash["old_password"];
     $user->new_password = $hash["new_password"];
     $stmt = $user->checkPassword();

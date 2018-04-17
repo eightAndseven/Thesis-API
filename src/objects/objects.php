@@ -95,10 +95,11 @@ class User{
      */   
     function changePassword(){
         try{
-            $sql = "UPDATE ".$this->table_name." SET password=:password WHERE id=:id AND password=:old_pass";
+            $sql = "UPDATE ".$this->table_name." SET password=:password WHERE id=:id AND username=:username AND password=:old_pass";
 
             $stmt = $this->conn->prepare($sql);
-            //bind to prepare stmt
+            //bind to prepare stmt'
+            $stmt->bindParam(":username", $this->username);
             $stmt->bindParam(":password", $this->new_password);
             $stmt->bindParam(":id", $this->id);
             $stmt->bindParam(":old_pass", $this->hashed_password);
