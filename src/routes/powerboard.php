@@ -156,18 +156,23 @@ $app->get('/api/powerboard/daily_consumed/{socket}',function($request, $response
         $consumed_arr['daily_consumed'] = array();
         while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
             extract($row);
+            
+            $date_format = strtotime($date);
+            $date_text = date("M j", $date_format);
 
             $consumed_item = array(
                 "id"=>$id,
                 "socket_id"=>$socket_id,
                 "watt_consumed"=>$watt_cons,
-                "date"=>$date
+                "date"=>$date,
+                "date_text"=>$date_text
             );
             array_push($consumed_arr['daily_consumed'], $consumed_item);
         }
         $message_array["response"] = array(
             "socket"=>$socket,
             "success"=>true,
+            "socket_data"=>"daily",
             "date_time"=>$date_time,
             "message" => "$count daily reports for socket $socket"
         );
@@ -211,6 +216,12 @@ $app->get('/api/powerboard/weekly_consumed/{socket}',function($request, $respons
         $consumed_arr['weekly_consumed'] = array();
         while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
             extract($row);
+            
+            $date_from_format = strtotime($date_from);
+            $date_to_format = strtotime($date_to);
+            $date_from_format = date("M j", $date_from_format);
+            $date_to_format = date("M j", $date_to_format);
+            $date_text = $date_from_format . " - " . $date_to_format;
 
             $consumed_item = array(
                 "id"=>$id,
@@ -218,6 +229,7 @@ $app->get('/api/powerboard/weekly_consumed/{socket}',function($request, $respons
                 "watt_consumed"=>$watt_cons,
                 "date_from"=>$date_from,
                 "date_to"=>$date_to,
+                "date_text"=>$date_text,
                 "week_no"=>$week_number
             );
             array_push($consumed_arr['weekly_consumed'], $consumed_item);
@@ -225,6 +237,7 @@ $app->get('/api/powerboard/weekly_consumed/{socket}',function($request, $respons
         $message_array["response"] = array(
             "socket"=>$socket,
             "success"=>true,
+            "socket_data"=>"weekly",
             "date_time"=>$date_time,
             "message" => "$count weekly report for socket $socket"
         );
