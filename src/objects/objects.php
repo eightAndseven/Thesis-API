@@ -391,27 +391,27 @@ class Socket{
         $status;
         switch($pin){
             case "1":
-                $msg = $this->socketOnOff($this->socket[0], $state);
+                $msg = $this->socketOnOff($pin, $this->socket[0], $state);
                 $status = $msg;
                 break;
             case "2":
-                $msg = $this->socketOnOff($this->socket[1], $state);
+                $msg = $this->socketOnOff($pin, $this->socket[1], $state);
                 $status = $msg;
                 break;
             case "3":
-                $msg = $this->socketOnOff($this->socket[2], $state);
+                $msg = $this->socketOnOff($pin, $this->socket[2], $state);
                 $status = $msg;
                 break;
             case "4":
-                $msg = $this->socketOnOff($this->socket[3], $state);
+                $msg = $this->socketOnOff($pin, $this->socket[3], $state);
                 $status = $msg;
                 break;
             case "5":
-                $msg = $this->socketOnOff($this->socket[4], $state);
+                $msg = $this->socketOnOff($pin, $this->socket[4], $state);
                 $status = $msg;
                 break;
             case "6":
-                $msg = $this->socketOnOff($this->socket[5], $state);
+                $msg = $this->socketOnOff($pin, $this->socket[5], $state);
                 $status = $msg;
                 break;
             default:
@@ -422,16 +422,16 @@ class Socket{
     /**
      * function to turn on/off the socket
      */
-    function socketOnOff($pin, $state){
+    function socketOnOff($socket, $pin, $state){
         $status;
         if($state == "on"){
             system("gpio mode ".$pin." out");
             system("gpio write ". $pin . " 0");
-            $status = "Turned on socket " .$pin;
+            $status = "Turned on socket " .$socket;
         }else{
             system("gpio mode ".$pin." out");
             system("gpio write ". $pin . " 1");
-            $status = "Turned off socket " .$pin;
+            $status = "Turned off socket " .$socket;
         }
         return $status;
     }
