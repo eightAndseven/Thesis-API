@@ -346,27 +346,27 @@ class Socket{
                 $status = $gpiostatus;
                 break;
             case "2":
-                exec("gpio read ".$this->socket[1], $status);
+                exec("gpio read ".$this->socket[1], $gpiostatus);
                 // $gpiostatus = '1';
                 $status = $gpiostatus;
                 break;
             case "3":
-                exec("gpio read ".$this->socket[2], $status);
+                exec("gpio read ".$this->socket[2], $gpiostatus);
                 // $gpiostatus = '1';
                 $status = $gpiostatus;
                 break;
             case "4":
-                exec("gpio read ".$this->socket[3], $status);
+                exec("gpio read ".$this->socket[3], $gpiostatus);
                 // $gpiostatus = '0';
                 $status = $gpiostatus;
                 break;
             case "5":
-                exec("gpio read ".$this->socket[4], $status);
+                exec("gpio read ".$this->socket[4], $gpiostatus);
                 // $gpiostatus = '0';
                 $status = $gpiostatus;
                 break;
             case "6":
-                exec("gpio read ".$this->socket[5], $status);
+                exec("gpio read ".$this->socket[5], $gpiostatus);
                 // $gpiostatus = '0';
                 $status = $gpiostatus;
                 break;
