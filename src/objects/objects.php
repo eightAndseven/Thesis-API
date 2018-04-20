@@ -345,48 +345,23 @@ class Socket{
      */
     function readSocketInfo(){
         $pin = $this->socket_id;
-        $status;
-        switch($pin){
-            case "1":
-                exec("gpio read ".$this->socket[0], $gpiostatus);
-                // $gpiostatus = '0';
-                $status = $gpiostatus;
-                break;
-            case "2":
-                exec("gpio read ".$this->socket[1], $gpiostatus);
-                // $gpiostatus = '1';
-                $status = $gpiostatus;
-                break;
-            case "3":
-                exec("gpio read ".$this->socket[2], $gpiostatus);
-                // $gpiostatus = '1';
-                $status = $gpiostatus;
-                break;
-            case "4":
-                exec("gpio read ".$this->socket[3], $gpiostatus);
-                // $gpiostatus = '0';
-                $status = $gpiostatus;
-                break;
-            case "5":
-                exec("gpio read ".$this->socket[4], $gpiostatus);
-                // $gpiostatus = '0';
-                $status = $gpiostatus;
-                break;
-            case "6":
-                exec("gpio read ".$this->socket[5], $gpiostatus);
-                // $gpiostatus = '0';
-                $status = $gpiostatus;
-                break;
-            default:
-                $status = -1;
+        try{
+            $sql = "SELECT socket_status FROM $this->table_name WHERE id=$pin";
+
+            $stmt = $this->conn->query($sql);
+
+            $status_bin = $stmt->fetch();
+
+            if($status_bin[0] === "1"){
+                $status = "off";
+            }else{
+                $status = "on";
+            }
+            return $status;
+        }catch(Exception $e){
+            return null;
         }
-        if($status[0] == "1"){
-            return "off";
-        }elseif($status[0] == "0"){
-            return "on";
-        }else{
-            return "ERROR";
-        }
+
     }
 
     /**
@@ -430,15 +405,23 @@ class Socket{
      * function to turn on/off the socket
      */
     function socketOnOff($socket, $pin, $state){
-        $status;
-        if($state == "on"){
-            system("gpio mode ".$pin." out");
-            system("gpio write ". $pin . " 0");
-            $status = "Turned on socket " .$socket;
-        }else{
-            system("gpio mode ".$pin." out");
-            system("gpio write ". $pin . " 1");
-            $status = "Turned off socket " .$socket;
+        try{
+            if($state === "on"){
+                $statuss = "Turned on socket " .$socket;
+                $status = "0";
+            }else{
+                $statuss = "Turned off socket " .$socket;
+                $status = "1";
+            }
+            $sql = "UPDATE $this->table_name SET socket_status=:status WHERE id=:id";
+            //prepare query
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindParam(":status", $status);
+            $stmt->bindParam(":id", $socket);
+            $stmt->execute();
+            return $statuss;
+        }catch(Exception $e){
+
         }
         return $status;
     }

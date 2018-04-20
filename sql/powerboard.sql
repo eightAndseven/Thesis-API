@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 03, 2018 at 12:59 PM
+-- Generation Time: Apr 20, 2018 at 07:02 PM
 -- Server version: 10.1.25-MariaDB
 -- PHP Version: 7.1.7
 
@@ -70,7 +70,35 @@ INSERT INTO `activity` (`id`, `user_activity`, `user_id`, `user_username`, `date
 (27, 'admin cancelled turn off at 2018-04-03 04:00:00', 1, 'admin', '0000-00-00 00:00:00'),
 (28, 'admin cancelled turn off at 2018-04-03 04:00:00', 1, 'admin', '0000-00-00 00:00:00'),
 (29, 'Socket 1 to be turned off at 2018-04-03 04:00:00 by admin', 1, 'admin', '2018-04-03 03:46:00'),
-(30, 'admin cancelled turn off at 2018-04-03 04:00:00', 1, 'admin', '2018-04-03 03:46:34');
+(30, 'admin cancelled turn off at 2018-04-03 04:00:00', 1, 'admin', '2018-04-03 03:46:34'),
+(31, 'Socket 1 to be turned off at 2018-04-04 00:04:00 by admin', 1, 'admin', '2018-04-04 00:03:37'),
+(32, 'Socket 1 to be turned off at 2018-04-05 00:05:00 by admin', 1, 'admin', '2018-04-04 00:05:56'),
+(33, 'Socket 1 to be turned off at 2018-04-04 00:07:00 by admin', 1, 'admin', '2018-04-04 00:06:15'),
+(34, 'Socket 1 to be turned off at 2018-04-04 00:09:40 by admin', 1, 'admin', '2018-04-04 00:09:35'),
+(35, 'Socket 1 to be turned off at 2018-04-04 00:12:30 by admin', 1, 'admin', '2018-04-04 00:12:19'),
+(36, 'Socket 1 to be turned off at 2018-04-04 00:14:10 by admin', 1, 'admin', '2018-04-04 00:14:02'),
+(37, 'Socket 1 to be turned off at 2018-04-04 00:15:00 by admin', 1, 'admin', '2018-04-04 00:14:50'),
+(38, 'Socket 1 to be turned off at 2018-04-04 00:16:15 by admin', 1, 'admin', '2018-04-04 00:16:09'),
+(39, 'Socket 1 to be turned off at 2018-04-04 00:17:30 by admin', 1, 'admin', '2018-04-04 00:17:17'),
+(40, 'Socket 1 to be turned off at 2018-04-04 10:40:20 by admin', 1, 'admin', '2018-04-04 10:39:54'),
+(41, 'Socket 1 to be turned off at 2018-04-04 10:50:10 by admin', 1, 'admin', '2018-04-04 10:49:25'),
+(42, 'Socket 1 to be turned off at 2018-04-04 10:53:50 by admin', 1, 'admin', '2018-04-04 10:53:41'),
+(43, 'Socket 1 to be turned off at 2018-04-04 10:55:00 by admin', 1, 'admin', '2018-04-04 10:54:48'),
+(44, 'Socket 1 to be turned off at 2018-04-04 11:02:00 by admin', 1, 'admin', '2018-04-04 11:01:28'),
+(45, 'Socket 1 to be turned off at 2018-04-04 11:05:10 by admin', 1, 'admin', '2018-04-04 11:04:59'),
+(46, 'Socket 1 to be turned off at 2018-04-04 11:05:50 by admin', 1, 'admin', '2018-04-04 11:05:36'),
+(47, 'Socket 1 to be turned off at 2018-04-04 11:07:20 by admin', 1, 'admin', '2018-04-04 11:06:55'),
+(48, 'Socket 1 to be turned off at 2018-04-04 11:08:30 by admin', 1, 'admin', '2018-04-04 11:08:15'),
+(49, 'Socket 1 to be turned off at 2018-04-04 11:11:00 by admin', 1, 'admin', '2018-04-04 11:10:36'),
+(50, 'Socket 1 to be turned off at 2018-04-04 11:23:30 by admin', 1, 'admin', '2018-04-04 11:22:25'),
+(51, 'Socket 1 to be turned off at 2018-04-04 11:24:30 by admin', 1, 'admin', '2018-04-04 11:24:19'),
+(52, 'Socket 1 to be turned off at 2018-04-04 11:27:00 by admin', 1, 'admin', '2018-04-04 11:26:43'),
+(53, 'Socket 1 to be turned off at 2018-04-05 02:56:00 by admin', 1, 'admin', '2018-04-04 14:55:47'),
+(54, 'Socket 1 to be turned off at 2018-04-05 02:57:00 by admin', 1, 'admin', '2018-04-04 14:56:53'),
+(55, 'Socket 1 to be turned off at 2018-04-05 03:00:00 by admin', 1, 'admin', '2018-04-04 14:57:38'),
+(56, 'Socket 1 to be turned off at 2018-04-04 14:58:50 by admin', 1, 'admin', '2018-04-04 14:58:29'),
+(57, 'Turned off socket 1', 0, 'admin', '2018-04-21 00:58:30'),
+(58, 'Turned on socket 1', 0, 'admin', '2018-04-21 00:59:17');
 
 -- --------------------------------------------------------
 
@@ -5797,7 +5825,17 @@ INSERT INTO `power_daily` (`id`, `socket_id`, `watt_cons`, `date`) VALUES
 (567, 2, '0.00000', '2018-04-01'),
 (568, 3, '0.00000', '2018-04-01'),
 (569, 4, '0.00000', '2018-04-01'),
-(570, 5, '0.00000', '2018-04-01');
+(570, 5, '0.00000', '2018-04-01'),
+(571, 1, '0.00000', '2018-04-02'),
+(572, 2, '0.00000', '2018-04-02'),
+(573, 3, '0.00000', '2018-04-02'),
+(574, 4, '0.00000', '2018-04-02'),
+(575, 5, '0.00000', '2018-04-02'),
+(576, 1, '0.00000', '2018-04-03'),
+(577, 2, '0.00000', '2018-04-03'),
+(578, 3, '0.00000', '2018-04-03'),
+(579, 4, '0.00000', '2018-04-03'),
+(580, 5, '0.00000', '2018-04-03');
 
 -- --------------------------------------------------------
 
@@ -5819,46 +5857,36 @@ CREATE TABLE `power_weekly` (
 --
 
 INSERT INTO `power_weekly` (`id`, `socket_id`, `watt_cons`, `date_from`, `date_to`, `week_number`) VALUES
-(21, 1, '1497.58000', '2018-02-26', '2018-03-04', 9),
-(22, 2, '1053.53000', '2018-02-26', '2018-03-04', 9),
-(23, 3, '1300.95000', '2018-02-26', '2018-03-04', 9),
-(24, 4, '1133.20000', '2018-02-26', '2018-03-04', 9),
-(25, 5, '1328.06000', '2018-02-26', '2018-03-04', 9),
-(36, 1, '8006.92000', '2018-03-05', '2018-03-11', 10),
-(37, 1, '8548.44000', '2018-03-12', '2018-03-18', 11),
-(38, 2, '8427.11000', '2018-03-05', '2018-03-11', 10),
-(39, 2, '8103.76000', '2018-03-12', '2018-03-18', 11),
-(40, 3, '8542.41000', '2018-03-05', '2018-03-11', 10),
-(41, 3, '8080.60000', '2018-03-12', '2018-03-18', 11),
-(42, 4, '8166.78000', '2018-03-05', '2018-03-11', 10),
-(43, 4, '7877.25000', '2018-03-12', '2018-03-18', 11),
-(44, 5, '8607.99000', '2018-03-05', '2018-03-11', 10),
-(45, 5, '8345.24000', '2018-03-12', '2018-03-18', 11),
-(46, 1, '7277.75000', '2018-03-19', '2018-03-25', 12),
-(47, 2, '7949.78000', '2018-03-19', '2018-03-25', 12),
-(48, 3, '7785.23000', '2018-03-19', '2018-03-25', 12),
-(49, 4, '7184.71000', '2018-03-19', '2018-03-25', 12),
-(50, 5, '7558.31000', '2018-03-19', '2018-03-25', 12),
-(51, 1, '8006.92000', '2018-03-05', '2018-03-11', 10),
-(52, 1, '8548.44000', '2018-03-12', '2018-03-18', 11),
-(53, 1, '7277.75000', '2018-03-19', '2018-03-25', 12),
-(54, 2, '8427.11000', '2018-03-05', '2018-03-11', 10),
-(55, 2, '8103.76000', '2018-03-12', '2018-03-18', 11),
-(56, 2, '7949.78000', '2018-03-19', '2018-03-25', 12),
-(57, 3, '8542.41000', '2018-03-05', '2018-03-11', 10),
-(58, 3, '8080.60000', '2018-03-12', '2018-03-18', 11),
-(59, 3, '7785.23000', '2018-03-19', '2018-03-25', 12),
-(60, 4, '8166.78000', '2018-03-05', '2018-03-11', 10),
-(61, 4, '7877.25000', '2018-03-12', '2018-03-18', 11),
-(62, 4, '7184.71000', '2018-03-19', '2018-03-25', 12),
-(63, 5, '8607.99000', '2018-03-05', '2018-03-11', 10),
-(64, 5, '8345.24000', '2018-03-12', '2018-03-18', 11),
-(65, 5, '7558.31000', '2018-03-19', '2018-03-25', 12),
-(66, 1, '29261.52000', '2018-03-26', '2018-04-01', 13),
-(67, 2, '29475.82000', '2018-03-26', '2018-04-01', 13),
-(68, 3, '29002.20000', '2018-03-26', '2018-04-01', 13),
-(69, 4, '30608.55000', '2018-03-26', '2018-04-01', 13),
-(70, 5, '29941.10000', '2018-03-26', '2018-04-01', 13);
+(146, 1, '1497.58000', '2018-02-26', '2018-03-04', 9),
+(147, 2, '1053.53000', '2018-02-26', '2018-03-04', 9),
+(148, 3, '1300.95000', '2018-02-26', '2018-03-04', 9),
+(149, 4, '1133.20000', '2018-02-26', '2018-03-04', 9),
+(150, 5, '1328.06000', '2018-02-26', '2018-03-04', 9),
+(176, 1, '8006.92000', '2018-03-05', '2018-03-11', 10),
+(177, 1, '8548.44000', '2018-03-12', '2018-03-18', 11),
+(178, 1, '7277.75000', '2018-03-19', '2018-03-25', 12),
+(179, 1, '29261.52000', '2018-03-26', '2018-04-01', 13),
+(180, 2, '8427.11000', '2018-03-05', '2018-03-11', 10),
+(181, 2, '8103.76000', '2018-03-12', '2018-03-18', 11),
+(182, 2, '7949.78000', '2018-03-19', '2018-03-25', 12),
+(183, 2, '29475.82000', '2018-03-26', '2018-04-01', 13),
+(184, 3, '8542.41000', '2018-03-05', '2018-03-11', 10),
+(185, 3, '8080.60000', '2018-03-12', '2018-03-18', 11),
+(186, 3, '7785.23000', '2018-03-19', '2018-03-25', 12),
+(187, 3, '29002.20000', '2018-03-26', '2018-04-01', 13),
+(188, 4, '8166.78000', '2018-03-05', '2018-03-11', 10),
+(189, 4, '7877.25000', '2018-03-12', '2018-03-18', 11),
+(190, 4, '7184.71000', '2018-03-19', '2018-03-25', 12),
+(191, 4, '30608.55000', '2018-03-26', '2018-04-01', 13),
+(192, 5, '8607.99000', '2018-03-05', '2018-03-11', 10),
+(193, 5, '8345.24000', '2018-03-12', '2018-03-18', 11),
+(194, 5, '7558.31000', '2018-03-19', '2018-03-25', 12),
+(195, 5, '29941.10000', '2018-03-26', '2018-04-01', 13),
+(196, 1, '0.00000', '2018-04-02', '2018-04-08', 14),
+(197, 2, '0.00000', '2018-04-02', '2018-04-08', 14),
+(198, 3, '0.00000', '2018-04-02', '2018-04-08', 14),
+(199, 4, '0.00000', '2018-04-02', '2018-04-08', 14),
+(200, 5, '0.00000', '2018-04-02', '2018-04-08', 14);
 
 -- --------------------------------------------------------
 
@@ -5878,6 +5906,15 @@ CREATE TABLE `schedule` (
   `user_username` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Dumping data for table `schedule`
+--
+
+INSERT INTO `schedule` (`id`, `socket_id`, `date_time_posted`, `date_time_sched`, `action`, `state`, `description`, `user_id`, `user_username`) VALUES
+(1, 1, '2018-04-04 14:55:47', '2018-04-05 02:56:00', 'off', 'READY', 'Socket 1 to be turned off at 2018-04-05 02:56:00 by admin', 1, 'admin'),
+(2, 1, '2018-04-04 14:56:53', '2018-04-05 02:57:00', 'off', 'READY', 'Socket 1 to be turned off at 2018-04-05 02:57:00 by admin', 1, 'admin'),
+(3, 1, '2018-04-04 14:57:38', '2018-04-05 03:00:00', 'off', 'READY', 'Socket 1 to be turned off at 2018-04-05 03:00:00 by admin', 1, 'admin');
+
 -- --------------------------------------------------------
 
 --
@@ -5888,20 +5925,21 @@ CREATE TABLE `socket` (
   `id` int(11) NOT NULL,
   `socket_name` varchar(16) NOT NULL,
   `socket_description` text NOT NULL,
-  `socket_pin` varchar(3) NOT NULL
+  `socket_pin` varchar(3) NOT NULL,
+  `socket_status` varchar(1) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `socket`
 --
 
-INSERT INTO `socket` (`id`, `socket_name`, `socket_description`, `socket_pin`) VALUES
-(1, 'Socket 1', 'Relay number 1 with GPIO 1', '1'),
-(2, 'Socket 2', 'Relay number 2 with GPIO 4', '4'),
-(3, 'Socket 3', 'Relay number 3 with GPIO 5', '5'),
-(4, 'Socket 4', 'Relay number 4 with GPIO 7', '7'),
-(5, 'Socket 5', 'Relay number 5 with GPIO 0', '0'),
-(6, 'Socket 6', 'Relay number 6 with GPIO 2', '2');
+INSERT INTO `socket` (`id`, `socket_name`, `socket_description`, `socket_pin`, `socket_status`) VALUES
+(1, 'Socket 1', 'Relay number 1 with GPIO 1', '1', '0'),
+(2, 'Socket 2', 'Relay number 2 with GPIO 4', '4', '1'),
+(3, 'Socket 3', 'Relay number 3 with GPIO 5', '5', '1'),
+(4, 'Socket 4', 'Relay number 4 with GPIO 7', '7', '1'),
+(5, 'Socket 5', 'Relay number 5 with GPIO 0', '0', '1'),
+(6, 'Socket 6', 'Relay number 6 with GPIO 2', '2', '1');
 
 -- --------------------------------------------------------
 
@@ -5924,7 +5962,8 @@ INSERT INTO `user_table` (`id`, `username`, `name`, `password`) VALUES
 (1, 'admin', 'Admin', '$1$P0w3rbo@$/s3efAwJUZmbCr9Q4l.t71'),
 (23, 'Hallelujaha', 'Jay Star', '$1$P0w3rbo@$YlWaXzoNzJjntev9HRw9D0'),
 (24, 'Hallelujah88', 'Jay Star', '$1$P0w3rbo@$HlONNrk/n6FlmV4lI5MaB.'),
-(25, 'reinyear', 'Reinier Santos', '$1$P0w3rbo@$FFpTfD0cZ8dGN/e0L6EBM.');
+(25, 'reinyear', 'Reinier Santos', '$1$P0w3rbo@$Q6EA9IbFKqAIy24jVyGnn.'),
+(26, 'MAUuu', 'APPLE CIDER', '$1$P0w3rbo@$Q6EA9IbFKqAIy24jVyGnn.');
 
 --
 -- Indexes for dumped tables
@@ -5980,7 +6019,7 @@ ALTER TABLE `user_table`
 -- AUTO_INCREMENT for table `activity`
 --
 ALTER TABLE `activity`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
 --
 -- AUTO_INCREMENT for table `power_con`
 --
@@ -5990,22 +6029,22 @@ ALTER TABLE `power_con`
 -- AUTO_INCREMENT for table `power_daily`
 --
 ALTER TABLE `power_daily`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=571;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=581;
 --
 -- AUTO_INCREMENT for table `power_weekly`
 --
 ALTER TABLE `power_weekly`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=71;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=201;
 --
 -- AUTO_INCREMENT for table `schedule`
 --
 ALTER TABLE `schedule`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 --
 -- AUTO_INCREMENT for table `user_table`
 --
 ALTER TABLE `user_table`
-  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;COMMIT;
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
