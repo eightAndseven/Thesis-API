@@ -327,6 +327,13 @@ class Socket{
     public $socket_pin;
     public $socket_read;
     public $socket_switch;
+    
+    /**
+     * Socket Constructor
+     */
+    public function __construct($db){
+        $this->conn = $db;
+    }
 
     /**
      * private variables for socket

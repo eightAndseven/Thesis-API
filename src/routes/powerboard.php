@@ -328,7 +328,7 @@ $app->get('/api/powerboard/socket_status/{socket}',function($request, $response)
 });
 
 /**
- * Switch socket state in route: http://piboard/slimapi/public/api/powerboard/socket_status/{socket}
+ * Switch socket state in route: http://piboard/slimapi/public/api/powerboard/switch_socket
  */
 $app->post('/api/powerboard/switch_socket',function($request, $response){
     //get request parameter
