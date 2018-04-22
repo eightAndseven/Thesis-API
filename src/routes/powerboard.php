@@ -519,7 +519,7 @@ $app->post('/api/powerboard/cancel_sched', function($request, $response){
             $activity->user_id = $schedule->user_id;
             $activity->user_username = $schedule->user_username;
             $activity->date_time = $date_time;
-            $activity->user_activity = $schedule->user_username . " cancelled turn " .$row[3]. " at ". $row[2];
+            $activity->user_activity = "Cancelled turn ". $row[3] ." for socket ". $schedule->socket_id ." at ". $row[2];
             $save_activity = $activity->saveActivity();
 
             $socket_arr["socket"] = array(
