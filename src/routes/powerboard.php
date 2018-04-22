@@ -490,7 +490,7 @@ $app->post('/api/powerboard/schedule',function($request, $response){
 /**
  * Delete a schedule process of a socket in route: http://piboard/slimapi/public/api/powerboard/cancel_sched
  */
-$app->delete('/api/powerboard/cancel_sched', function($request, $response){
+$app->post('/api/powerboard/cancel_sched', function($request, $response){
     //get request parameter
     $sched_id = $request->getParam('sched_id');
     $socket_num = $request->getParam('socket');
@@ -519,7 +519,7 @@ $app->delete('/api/powerboard/cancel_sched', function($request, $response){
             $activity->user_id = $schedule->user_id;
             $activity->user_username = $schedule->user_username;
             $activity->date_time = $date_time;
-            $activity->user_activity = $schedule->user_username . " cancelled turn " .$row[3]. " at ". $row[2];
+            $activity->user_activity = "Cancelled turn ". $row[3] ." for socket ". $schedule->socket_id ." at ". row[2];
             $save_activity = $activity->saveActivity();
 
             $socket_arr["socket"] = array(
