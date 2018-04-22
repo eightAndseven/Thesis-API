@@ -100,13 +100,13 @@ $app->get('/api/powerboard/activities',function($request, $response){
         $activity_arr["user_activity"] = array();
         while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
             extract($row);
-
+            $date_sched = date('F j, Y g:i:s A', strtotime($date_time));
             $activity_items = array(
                 "id" => $id,
                 "uid" => $user_id,
                 "username" => $user_username,
                 "user_activity" => $user_activity,
-                "date_time" => $date_time
+                "date_time" => $date_sched
             );
             array_push($activity_arr["user_activity"], $activity_items);
         }
@@ -440,7 +440,7 @@ $app->post('/api/powerboard/schedule',function($request, $response){
             $activity->user_id = $schedule->user_id;
             $activity->user_username = $schedule->user_username;
             $activity->date_time = $schedule->date_time_posted;
-            $activity->user_activity = $sched_exec["description"];
+            $activity->user_activity = "Socket ".$this->socket_id." to be turned ".$this->action." at ". date('M j h:i a', $unix_time);
             $save_activity = $activity->saveActivity();
             
             $socket_arr["socket"] = array(
@@ -520,7 +520,7 @@ $app->post('/api/powerboard/cancel_sched', function($request, $response){
             $activity->user_id = $schedule->user_id;
             $activity->user_username = $schedule->user_username;
             $activity->date_time = $date_time;
-            $activity->user_activity = "Cancelled turn ". $row[3] ." for socket ". $schedule->socket_id ." at ". $row[2];
+            $activity->user_activity = "Cancelled turn ". $row[3] ." for socket ". $schedule->socket_id ." at ". date('M j h:i a', strtotime($row[2]));
             $save_activity = $activity->saveActivity();
 
             $socket_arr["socket"] = array(
