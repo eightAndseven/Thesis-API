@@ -278,12 +278,13 @@ $app->get('/api/powerboard/socket_status/{socket}',function($request, $response)
         $count = $stmt->rowCount();
         if($count == 1){
             $row = $stmt->fetch();
+            $date_sched = date('M j g:i a', strtotime($row[2]));
             $socket_status["socket"] = array(
                 "socket"=>$socket_num,
                 "socket_status"=>$read,
                 "schedule"=>true,
                 "sched_id"=>$row[0],
-                "date_sched" => $row[2],
+                "date_sched" => $date_sched,
                 "socket_state_sched" => $row[3],
                 "sched_user"=>$row[4]
             );
