@@ -430,12 +430,14 @@ $app->post('/api/powerboard/schedule',function($request, $response){
         $schedule->socket_id = $socket_num;
         $schedule->date_time_posted = $date_time;
         $schedule->date_time_sched = $date_time_sched;
+        $schedule->date_time_now = $date_time;
         $schedule->action = $socket_switch;
         $schedule->user_id = $user_id;
         $schedule->user_username = $user_username;
         $sched_exec = $schedule->scheduleSocket();
 
         if($sched_exec["success"]){
+            $sched_stmt = $schedule->getSocketSchedule()->fetch();
             $activity = new Activity($db);
             $activity->user_id = $schedule->user_id;
             $activity->user_username = $schedule->user_username;
@@ -446,7 +448,8 @@ $app->post('/api/powerboard/schedule',function($request, $response){
             $socket_arr["socket"] = array(
                 "schedule" => $sched_exec["success"],
                 "socket" => $schedule->socket_id,
-                "date_sched" => $schedule->date_time_sched,
+                "sched_id" => $sched_stmt[0],
+                "date_sched" => date('M j h:i a', strtotime($schedule->date_time_sched)),
                 "socket_state_sched" => $schedule->action
             );
             $activity_arr["activity"] = array(
