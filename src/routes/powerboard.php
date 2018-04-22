@@ -490,7 +490,7 @@ $app->post('/api/powerboard/schedule',function($request, $response){
 /**
  * Delete a schedule process of a socket in route: http://piboard/slimapi/public/api/powerboard/cancel_sched
  */
-$app->delete('/api/powerboard/cancel_sched', function($request, $response){
+$app->post('/api/powerboard/cancel_sched', function($request, $response){
     //get request parameter
     $sched_id = $request->getParam('sched_id');
     $socket_num = $request->getParam('socket');
