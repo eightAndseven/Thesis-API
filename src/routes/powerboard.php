@@ -403,7 +403,7 @@ $app->post('/api/powerboard/switch_socket',function($request, $response){
 });
 
 /**
- * Schedule socket for turn off in route: http://piboard/slimapi/public/api/powerboard/socket_status/{socket}
+ * Schedule socket for turn off in route: http://piboard/slimapi/public/api/powerboard/schedule
  */
 $app->post('/api/powerboard/schedule',function($request, $response){
     //get request parameter
@@ -440,7 +440,7 @@ $app->post('/api/powerboard/schedule',function($request, $response){
             $activity->user_id = $schedule->user_id;
             $activity->user_username = $schedule->user_username;
             $activity->date_time = $schedule->date_time_posted;
-            $activity->user_activity = $sched_exec["description"];
+            $activity->user_activity = "Socket ".$schedule->socket_id." to be turned $schedule->action at ". date('F j h:i a', $unix_time) ;
             $save_activity = $activity->saveActivity();
             
             $socket_arr["socket"] = array(
@@ -520,7 +520,7 @@ $app->post('/api/powerboard/cancel_sched', function($request, $response){
             $activity->user_id = $schedule->user_id;
             $activity->user_username = $schedule->user_username;
             $activity->date_time = $date_time;
-            $activity->user_activity = "Cancelled turn ". $row[3] ." for socket ". $schedule->socket_id ." at ". $row[2];
+            $activity->user_activity = "Cancelled turn ". $row[3] ." for socket ". $schedule->socket_id ." at ". date('F j h:i a', strtotime($row[2]));
             $save_activity = $activity->saveActivity();
 
             $socket_arr["socket"] = array(
