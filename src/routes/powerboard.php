@@ -100,13 +100,13 @@ $app->get('/api/powerboard/activities',function($request, $response){
         $activity_arr["user_activity"] = array();
         while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
             extract($row);
-
+            $date_sched = date('F j, Y g:i:s A', strtotime($date_time));
             $activity_items = array(
                 "id" => $id,
                 "uid" => $user_id,
                 "username" => $user_username,
                 "user_activity" => $user_activity,
-                "date_time" => $date_time
+                "date_time" => $date_sched
             );
             array_push($activity_arr["user_activity"], $activity_items);
         }
@@ -278,12 +278,13 @@ $app->get('/api/powerboard/socket_status/{socket}',function($request, $response)
         $count = $stmt->rowCount();
         if($count == 1){
             $row = $stmt->fetch();
+            $date_sched = date('M j g:i a', strtotime($row[2]));
             $socket_status["socket"] = array(
                 "socket"=>$socket_num,
                 "socket_status"=>$read,
                 "schedule"=>true,
                 "sched_id"=>$row[0],
-                "date_sched" => $row[2],
+                "date_sched" => $date_sched,
                 "socket_state_sched" => $row[3],
                 "sched_user"=>$row[4]
             );
