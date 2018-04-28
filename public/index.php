@@ -6,6 +6,7 @@ require '../vendor/autoload.php';
 require '../src/config/db.php';
 require '../src/config/hasher.php';
 require '../src/objects/objects.php';
+require '../src/objects/ml_objects.php';
 
 $configuration = [
     'settings' => [
@@ -27,4 +28,6 @@ require '../src/routes/customers.php';
 
 //powerboard routes
 require '../src/routes/powerboard.php';
+
+require '../src/routes/ml_socket.php';
 $app->run();
