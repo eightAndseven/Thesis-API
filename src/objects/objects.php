@@ -522,7 +522,7 @@ class Schedule{
         }catch(PDOException $e){
             $return_arr = array(
                 "success"=>false,
-                "description"=>$e->getMessage()
+                "description"=>"Bad SQL Request"
             );
             return $return_arr;
         }

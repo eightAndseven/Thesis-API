@@ -419,7 +419,7 @@ $app->post('/api/powerboard/schedule',function($request, $response){
     $db = new Database();
     $db = $db->connectDB();
 
-    // try{
+    try{
         $unix_time = strtotime($time_sched);
         if($time_now >= $unix_time){
             //unix time add a day if time now is already past
@@ -480,15 +480,15 @@ $app->post('/api/powerboard/schedule',function($request, $response){
             return $response->withHeader('Content-Type', 'application/json')
                 ->write(json_encode($message_array));
         }
-    // }catch(PDOException $e){
-    //     $message_array["response"] = array(
-    //         "success"=>false,
-    //         "date_time"=>$date_time,
-    //         "message" => "Bad Request"
-    //     );
-    //     return $response->withHeader('Content-Type', 'application/json')
-    //         ->write(json_encode($message_array));
-    // }
+    }catch(Exception $e){
+        $message_array["response"] = array(
+            "success"=>false,
+            "date_time"=>$date_time,
+            "message" => "Bad Request"
+        );
+        return $response->withHeader('Content-Type', 'application/json')
+            ->write(json_encode($message_array));
+    }
 });
 
 /**
