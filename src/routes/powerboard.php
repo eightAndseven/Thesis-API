@@ -442,7 +442,7 @@ $app->post('/api/powerboard/schedule',function($request, $response){
             $activity->user_id = $schedule->user_id;
             $activity->user_username = $schedule->user_username;
             $activity->date_time = $schedule->date_time_posted;
-            $activity->user_activity = "Socket ".$this->socket_id." to be turned ".$this->action." at ". date('M j h:i a', $unix_time);
+            $activity->user_activity = "Socket ".$schedule->socket_id." to be turned ".$schedule->action." at ". date('M j h:i a', $unix_time);
             $save_activity = $activity->saveActivity();
             
             $socket_arr["socket"] = array(
