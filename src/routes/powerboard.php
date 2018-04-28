@@ -799,3 +799,54 @@ $app->get('/api/powerboard/weekly_graph/{socket}', function($request, $response)
         }
 
 });
+
+$app->post('/api/powerboard/change_brightness', function($request, $response){
+    $brightness = $request->getParam('brightness');
+    $user_id = $request->getParam('user_id');
+    $user_username = $request->getParam('user_username');
+    $date_time = date('Y-m-d H:i:s');
+
+    $db = new Database();
+    $db = $db->connectDB();
+
+    $socket = new Socket($db);
+    $socket->brightness = $brightness;
+    $socket_message = $socket->changeBrightness();
+
+    if(strlen($socket_message) != 0){
+        $activity = new Activity();
+        $activity = new Activity($db);
+        $activity->user_id = $user_id;
+        $activity->user_username = $user_username;
+        $activity->date_time = $date_time;
+        $activity->user_activity = $socket_message;
+        $save_activity = $activity->saveActivity();
+
+        $socket_arr['dimlight'] = array(
+            "socket" => "Dimmer",
+            "brightness" => $socket->brightness
+        );
+        $activity_arr["activity"] = array(
+            "uid"=>$activity->user_id,
+            "username"=>$activity->user_username,
+            "date_time"=>$activity->date_time,
+            "activity"=>$activity->user_activity
+        );
+        $message_array["response"] = array(
+            "success"=>true,
+            "date_time"=>$date_time,
+            "message" => $activity->user_activity
+        );
+
+        return $response->withHeader('Content-Type', 'application/json')
+        ->write(json_encode(array_merge($message_array, $socket_arr, $activity_arr)));
+    }else{
+        $message_array["response"] = array(
+            "success"=>true,
+            "date_time"=>$date_time,
+            "message" => "Bad Request"
+        );
+        return $response->withHeader('Content-Type', 'application/json')
+        ->write(json_encode($message_array));
+    }
+});

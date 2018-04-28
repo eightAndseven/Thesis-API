@@ -327,7 +327,8 @@ class Socket{
     public $socket_pin;
     public $socket_read;
     public $socket_switch;
-    
+    public $brightness;
+
     /**
      * Socket Constructor
      */
@@ -440,6 +441,15 @@ class Socket{
             system("gpio write ". $pin . " 1");
             $status = "Turned off socket " .$socket;
         }
+        return $status;
+    }
+    /**
+     * function to change brightness of dimmer
+     */
+    function changeBrightness(){
+        $python_exec = "python ~/Documents/pythonscripts/test/test_lights.py ". $this->brightness;
+        system($python_exec);
+        $status = "Change brightness of dimmer at ".$this->brightness."%";
         return $status;
     }
 }
