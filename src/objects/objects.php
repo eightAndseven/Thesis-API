@@ -519,10 +519,10 @@ class Schedule{
                 );
                 return $return_arr;
             }
-        }catch(Exception $e){
+        }catch(PDOException $e){
             $return_arr = array(
                 "success"=>false,
-                "description"=>"ERROR"
+                "description"=>$e->getMessage()
             );
             return $return_arr;
         }

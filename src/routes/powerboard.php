@@ -480,7 +480,7 @@ $app->post('/api/powerboard/schedule',function($request, $response){
             return $response->withHeader('Content-Type', 'application/json')
                 ->write(json_encode($message_array));
         }
-    }catch(Exception $e){
+    }catch(PDOException $e){
         $message_array["response"] = array(
             "success"=>false,
             "date_time"=>$date_time,
