@@ -6,6 +6,7 @@ require '../vendor/autoload.php';
 require '../src/config/db.php';
 require '../src/config/hasher.php';
 require '../src/objects/objects.php';
+require '../src/objects/mailer_object.php';
 
 $configuration = [
     'settings' => [
@@ -23,8 +24,11 @@ $app->get('/hello/{name}', function (Request $request, Response $response, array
 });
 
 //customers routes
-require '../src/routes/customers.php';
+// require '../src/routes/customers.php';
 
 //powerboard routes
 require '../src/routes/powerboard.php';
+
+//mailer route
+require '../src/routes/mailer_powerboard.php';
 $app->run();

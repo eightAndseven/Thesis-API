@@ -1,6 +1,17 @@
 <?php
 
 /**
+ * OBJECTS Available:
+ * 1. User
+ * 2. Activity
+ * 3. DailyConsumed
+ * 4. WeeklyConsumed
+ * 5. Socket
+ * 6. Schedule
+ */
+
+
+/**
  * User object has following functions:
  * 1. loginValidate()
  * 2. loginUser()
@@ -16,6 +27,7 @@ class User{
     public $id;
     public $username;
     public $name;
+    public $email;
     public $password;
     public $new_password;
     public $hashed_password;
@@ -103,6 +115,43 @@ class User{
             $stmt->bindParam(":password", $this->new_password);
             $stmt->bindParam(":id", $this->id);
             $stmt->bindParam(":old_pass", $this->hashed_password);
+
+            if($stmt->execute()){
+                return true;
+            }else{
+                return false;
+            }
+        }catch(PDOEXCEPTION $e){
+            return false;
+        }
+    }
+
+    /**
+     * function to check if email exists in the database
+     */
+    function getEmailUserInfo(){
+        try{
+            $sql = "SELECT id, username, name, email FROM ".$this->table_name." WHERE email=:email";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindParam(":email", $this->email);
+            $stmt->execute();
+            return $stmt;
+        }catch(PDOEXCEPTION $e){
+            return $e;
+        }
+    }
+
+    /**
+     * function to change password in forgot password
+     */
+    function changePasswordForgot(){
+        try{
+            $sql = "UPDATE $this->table_name SET password=:password WHERE id=:id";
+
+            $stmt = $this->conn->prepare($sql);
+            //bind to prepare stmt'
+            $stmt->bindParam(":password", $this->new_password);
+            $stmt->bindParam(":id", $this->id);
 
             if($stmt->execute()){
                 return true;

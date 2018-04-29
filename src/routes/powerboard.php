@@ -8,16 +8,18 @@ use \Psr\Http\Message\ResponseInterface as Response;
  * 1.  /api/powerboard/login
  * 6.  /api/powerboard/switch_socket
  * 7.  /api/powerboard/schedule
+ * 8.  /api/powerboard/cancel_sched
+ * 13. /api/powerboard/change_brightness
  * GET
  * 2.  /api/powerboard/activities
  * 3.  /api/powerboard/daily_consumed/{socket}
  * 4.  /api/powerboard/weekly_consumed/{socket}
  * 5.  /api/powerboard/socket_status/{socket}
  * 9.  /api/powerboard/userinfo/{id}
+ * 11. /api/powerboard/daily_graph/{socket}
+ * 12. /api/powerboard/daily_graph/{socket}
  * PUT
  * 10. /api/powerboard/changepassword
- * DELETE
- * 8.  /api/powerboard/cancel_sched
  */
 
 /**
@@ -646,7 +648,7 @@ $app->put('/api/powerboard/changepassword', function($request, $response){
     $user->new_password = $hash["new_password"];
     $stmt = $user->checkPassword();
     $count = $stmt->rowCount();
-    if(($new_password == $con_password) && $count == 1){
+    if(($new_password === $con_password) && $count == 1){
         $change = $user->changePassword();
         if($change){
             $row = $stmt->fetch();
@@ -800,6 +802,9 @@ $app->get('/api/powerboard/weekly_graph/{socket}', function($request, $response)
 
 });
 
+/**
+ * function to change brightness for light socket in route: 
+ */
 $app->post('/api/powerboard/change_brightness', function($request, $response){
     $brightness = $request->getParam('brightness');
     $user_id = $request->getParam('user_id');
@@ -850,3 +855,4 @@ $app->post('/api/powerboard/change_brightness', function($request, $response){
         ->write(json_encode($message_array));
     }
 });
+
