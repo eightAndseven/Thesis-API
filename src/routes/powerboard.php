@@ -8,16 +8,18 @@ use \Psr\Http\Message\ResponseInterface as Response;
  * 1.  /api/powerboard/login
  * 6.  /api/powerboard/switch_socket
  * 7.  /api/powerboard/schedule
+ * 8.  /api/powerboard/cancel_sched
+ * 13. /api/powerboard/change_brightness
  * GET
  * 2.  /api/powerboard/activities
  * 3.  /api/powerboard/daily_consumed/{socket}
  * 4.  /api/powerboard/weekly_consumed/{socket}
  * 5.  /api/powerboard/socket_status/{socket}
  * 9.  /api/powerboard/userinfo/{id}
+ * 11. /api/powerboard/daily_graph/{socket}
+ * 12. /api/powerboard/daily_graph/{socket}
  * PUT
  * 10. /api/powerboard/changepassword
- * DELETE
- * 8.  /api/powerboard/cancel_sched
  */
 
 /**
@@ -442,13 +444,13 @@ $app->post('/api/powerboard/schedule',function($request, $response){
             $activity->user_id = $schedule->user_id;
             $activity->user_username = $schedule->user_username;
             $activity->date_time = $schedule->date_time_posted;
-            $activity->user_activity = "Socket ".$schedule->socket_id." to be turned $schedule->action at ". date('F j h:i a', $unix_time) ;
+            $activity->user_activity = "Socket ".$schedule->socket_id." to be turned ".$schedule->action." at ". date('M j h:i a', $unix_time);
             $save_activity = $activity->saveActivity();
             
             $socket_arr["socket"] = array(
                 "schedule" => $sched_exec["success"],
                 "socket" => $schedule->socket_id,
-                "sched_id"=> $sched_stmt[0],
+                "sched_id" => $sched_stmt[0],
                 "date_sched" => date('M j h:i a', strtotime($schedule->date_time_sched)),
                 "socket_state_sched" => $schedule->action
             );
@@ -523,7 +525,7 @@ $app->post('/api/powerboard/cancel_sched', function($request, $response){
             $activity->user_id = $schedule->user_id;
             $activity->user_username = $schedule->user_username;
             $activity->date_time = $date_time;
-            $activity->user_activity = "Cancelled turn ". $row[3] ." for socket ". $schedule->socket_id ." at ". date('F j h:i a', strtotime($row[2]));
+            $activity->user_activity = "Cancelled turn ". $row[3] ." for socket ". $schedule->socket_id ." at ". date('M j h:i a', strtotime($row[2]));
             $save_activity = $activity->saveActivity();
 
             $socket_arr["socket"] = array(
@@ -646,7 +648,7 @@ $app->put('/api/powerboard/changepassword', function($request, $response){
     $user->new_password = $hash["new_password"];
     $stmt = $user->checkPassword();
     $count = $stmt->rowCount();
-    if(($new_password == $con_password) && $count == 1){
+    if(($new_password === $con_password) && $count == 1){
         $change = $user->changePassword();
         if($change){
             $row = $stmt->fetch();
@@ -799,3 +801,58 @@ $app->get('/api/powerboard/weekly_graph/{socket}', function($request, $response)
         }
 
 });
+
+/**
+ * function to change brightness for light socket in route: 
+ */
+$app->post('/api/powerboard/change_brightness', function($request, $response){
+    $brightness = $request->getParam('brightness');
+    $user_id = $request->getParam('user_id');
+    $user_username = $request->getParam('user_username');
+    $date_time = date('Y-m-d H:i:s');
+
+    $db = new Database();
+    $db = $db->connectDB();
+
+    $socket = new Socket($db);
+    $socket->brightness = $brightness;
+    $socket_message = $socket->changeBrightness();
+
+    if(strlen($socket_message) != 0){
+        $activity = new Activity();
+        $activity = new Activity($db);
+        $activity->user_id = $user_id;
+        $activity->user_username = $user_username;
+        $activity->date_time = $date_time;
+        $activity->user_activity = $socket_message;
+        $save_activity = $activity->saveActivity();
+
+        $socket_arr['dimlight'] = array(
+            "socket" => "Dimmer",
+            "brightness" => $socket->brightness
+        );
+        $activity_arr["activity"] = array(
+            "uid"=>$activity->user_id,
+            "username"=>$activity->user_username,
+            "date_time"=>$activity->date_time,
+            "activity"=>$activity->user_activity
+        );
+        $message_array["response"] = array(
+            "success"=>true,
+            "date_time"=>$date_time,
+            "message" => $activity->user_activity
+        );
+
+        return $response->withHeader('Content-Type', 'application/json')
+        ->write(json_encode(array_merge($message_array, $socket_arr, $activity_arr)));
+    }else{
+        $message_array["response"] = array(
+            "success"=>true,
+            "date_time"=>$date_time,
+            "message" => "Bad Request"
+        );
+        return $response->withHeader('Content-Type', 'application/json')
+        ->write(json_encode($message_array));
+    }
+});
+
