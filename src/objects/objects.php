@@ -484,6 +484,41 @@ class Socket{
         $status = "Change brightness of dimmer at ".$this->brightness."%";
         return $status;
     }
+
+    /**
+     * function to save brightness in db
+     */
+    function changeBrightnessDB(){
+        try{
+            $socket_num = 5;
+            $sql = "UPDATE $this->table_name SET brightness=:brightness WHERE id=:id";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindParam(":brightness", $this->brightness);
+            $stmt->bindParam(":id", $socket_numchangePasswordForgot);
+            if($stmt->execute()){
+                return true;
+            }else{
+                return false;
+            }
+        }catch(PDOEXCEPTION $e){
+            return false;
+        }
+    }
+    /**
+     * function to get the brightness in database
+     */
+    function getBrightness(){
+        try{
+            $sql = "SELECT brightness FROM $this->table_name WHERE id=:id";
+            $stmt = $this->conn->prepare($sql);
+            $socket = 5;
+            $stmt->bindParam(":id", $socket);
+            $stmt->execute();
+            return $stmt;
+        }catch(PDOEXCEPTION $e){
+            return "ERROR";
+        }
+    }
 }
 
 /**

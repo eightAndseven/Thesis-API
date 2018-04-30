@@ -816,38 +816,48 @@ $app->post('/api/powerboard/change_brightness', function($request, $response){
 
     $socket = new Socket($db);
     $socket->brightness = $brightness;
-    $socket_message = $socket->changeBrightness();
+    // $socket_message = $socket->changeBrightness();
+    $socket_message = "Change brightness of dimmer at ".$socket->brightness."%";
 
     if(strlen($socket_message) != 0){
-        $activity = new Activity();
-        $activity = new Activity($db);
-        $activity->user_id = $user_id;
-        $activity->user_username = $user_username;
-        $activity->date_time = $date_time;
-        $activity->user_activity = $socket_message;
-        $save_activity = $activity->saveActivity();
+        if($socket->changeBrightnessDB()){
+            $activity = new Activity($db);
+            $activity->user_id = $user_id;
+            $activity->user_username = $user_username;
+            $activity->date_time = $date_time;
+            $activity->user_activity = $socket_message;
+            $save_activity = $activity->saveActivity();
 
-        $socket_arr['dimlight'] = array(
-            "socket" => "Dimmer",
-            "brightness" => $socket->brightness
-        );
-        $activity_arr["activity"] = array(
-            "uid"=>$activity->user_id,
-            "username"=>$activity->user_username,
-            "date_time"=>$activity->date_time,
-            "activity"=>$activity->user_activity
-        );
-        $message_array["response"] = array(
-            "success"=>true,
-            "date_time"=>$date_time,
-            "message" => $activity->user_activity
-        );
+            $socket_arr['dimlight'] = array(
+                "socket" => "Dimmer",
+                "brightness" => $socket->brightness
+            );
+            $activity_arr["activity"] = array(
+                "uid"=>$activity->user_id,
+                "username"=>$activity->user_username,
+                "date_time"=>$activity->date_time,
+                "activity"=>$activity->user_activity
+            );
+            $message_array["response"] = array(
+                "success"=>true,
+                "date_time"=>$date_time,
+                "message" => $activity->user_activity
+            );
 
-        return $response->withHeader('Content-Type', 'application/json')
-        ->write(json_encode(array_merge($message_array, $socket_arr, $activity_arr)));
+            return $response->withHeader('Content-Type', 'application/json')
+            ->write(json_encode(array_merge($message_array, $socket_arr, $activity_arr)));
+        }else{
+            $message_array["response"] = array(
+                "success"=>false,
+                "date_time"=>$date_time,
+                "message" => "Bad Request"
+            );
+            return $response->withHeader('Content-Type', 'application/json')
+            ->write(json_encode($message_array));
+        }
     }else{
         $message_array["response"] = array(
-            "success"=>true,
+            "success"=>false,
             "date_time"=>$date_time,
             "message" => "Bad Request"
         );
@@ -856,3 +866,37 @@ $app->post('/api/powerboard/change_brightness', function($request, $response){
     }
 });
 
+/**
+ * function to get the status of the light socket at route: 
+ */
+$app->get('/api/powerboard/light_socket', function($request, $response){
+    $date_time = date('Y-m-d H:i:s');
+    $db = new Database();
+    $db = $db->connectDB();
+
+    $socket = new Socket($db);
+    $stmt = $socket->getBrightness();
+    $count = $stmt->rowCount();
+    if($count == 1){
+        $socket->brightness = $stmt->fetch()['brightness'];
+        $socket_arr['socket'] = array(
+            "socket"=>"5",
+            "brightness"=>$socket->brightness
+        );
+        $message_arr['response'] = array(
+            "success"=> true,
+            "date_time" => $date_time,
+            "message" => "Dim Light is at $socket->brightness%" 
+        );
+        return $response->withHeader('Content-Type', 'application/json')
+        ->write(json_encode(array_merge($message_arr, $socket_arr)));
+    }else{
+        $message_arr['response'] = array(
+            "success" => false,
+            "date_time" => $date_time,
+            "message" => "Bad Request"
+        );
+        return $response->withHeader('Content-Type', 'application/json')
+        ->write(json_encode($message_arr));
+    }
+});
