@@ -476,6 +476,7 @@ class Socket{
         }
         return $status;
     }
+    
     /**
      * function to turn on/off the socket
      */
