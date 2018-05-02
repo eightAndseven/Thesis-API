@@ -497,10 +497,26 @@ class Socket{
      * function to change brightness of dimmer
      */
     function changeBrightness(){
-        $python_exec = "python ~/Documents/pythonscripts/test/test_lights.py ". $this->brightness;
+        $python_exec = "python2 /usr/scripts/Pithon/prod/change_brightness.py ". $this->brightness;
         system($python_exec);
         $status = "Change brightness of dimmer at ".$this->brightness."%";
         return $status;
+    }
+
+    /**
+     * function to get the brightness in database
+     */
+   function getBrightness(){
+        try{
+            $sql = "SELECT brightness FROM $this->table_name WHERE id=:id";
+            $stmt = $this->conn->prepare($sql);
+            $socket = 5;
+            $stmt->bindParam(":id", $socket);
+            $stmt->execute();
+            return $stmt;
+        }catch(PDOEXCEPTION $e){
+            return "ERROR";
+        }
     }
 }
 
