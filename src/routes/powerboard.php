@@ -849,10 +849,6 @@ $app->post('/api/powerboard/change_brightness', function($request, $response){
                 "message" => $activity->user_activity
             );
         }
-
-
-
-
         return $response->withHeader('Content-Type', 'application/json')
         ->write(json_encode(array_merge($message_array, $socket_arr, $activity_arr)));
     }else{

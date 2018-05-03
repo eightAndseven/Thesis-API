@@ -512,7 +512,7 @@ class Socket{
             $sql = "UPDATE $this->table_name SET brightness=:brightness WHERE id=:id";
             $stmt = $this->conn->prepare($sql);
             $stmt->bindParam(":brightness", $this->brightness);
-            $stmt->bindParam(":id", $socket_numchangePasswordForgot);
+            $stmt->bindParam(":id", $socket_num);
             if($stmt->execute()){
                 return true;
             }else{
