@@ -928,7 +928,7 @@ $app->get('/api/powerboard/get_appliance/{socket}', function($request, $response
         $message_arr['response'] = array(
             "success"=> true,
             "date_time" => $date_time,
-            "message" => "Device identified is $socket->appaliance" 
+            "message" => "Device identified is $socket->appliance" 
         );
         return $response->withHeader('Content-Type', 'application/json')
         ->write(json_encode(array_merge($message_arr, $socket_arr)));
