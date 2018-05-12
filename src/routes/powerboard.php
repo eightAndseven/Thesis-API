@@ -271,6 +271,7 @@ $app->get('/api/powerboard/socket_status/{socket}',function($request, $response)
     $socket = new Socket($db);
     $socket->socket_id = $socket_num;
     $read = $socket->readSocketInfo();
+    $appliance = $socket->getAppliance()->fetch()['appliance'];
     if($read != "ERROR"){
         //check if socket has scheduled job
         $schedule = new Schedule($db);
@@ -284,6 +285,7 @@ $app->get('/api/powerboard/socket_status/{socket}',function($request, $response)
             $socket_status["socket"] = array(
                 "socket"=>$socket_num,
                 "socket_status"=>$read,
+                "appliance"=>$appliance,
                 "schedule"=>true,
                 "sched_id"=>$row[0],
                 "date_sched" => $date_sched,

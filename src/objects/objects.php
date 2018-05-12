@@ -439,6 +439,16 @@ class Socket{
         }
     }
 
+    function getAppliance(){
+        try{
+            $sql = "SELECT appliance FROM $this->table_name WHERE id=" . $this->socket_id;
+            $stmt = $this->conn->query($sql);
+            return $stmt;
+        }catch(PDOEXCEPTION $e){
+            return null;
+        }
+    }
+
     /**
      * function to read state to on/off
      */
