@@ -396,7 +396,7 @@ class Socket{
     function readSocketInfo(){
         $pin = $this->socket_id;
         try{
-            $sql = "SELECT socket_status FROM $this->table_name WHERE id=$pin";
+            $sql = "SELECT socket_status, appliance FROM $this->table_name WHERE id=$pin";
 
             $stmt = $this->conn->query($sql);
 
@@ -407,6 +407,10 @@ class Socket{
             }else{
                 $status = "on";
             }
+            $socket_arr = array(
+                "status"=>$status,
+                "appliance"=>$status_bin[1]
+            );
             return $status;
         }catch(Exception $e){
             return null;

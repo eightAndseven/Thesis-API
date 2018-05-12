@@ -283,7 +283,8 @@ $app->get('/api/powerboard/socket_status/{socket}',function($request, $response)
             $date_sched = date('M j g:i a', strtotime($row[2]));
             $socket_status["socket"] = array(
                 "socket"=>$socket_num,
-                "socket_status"=>$read,
+                "socket_status"=>$read["status"],
+                "appliance"=>$read["appliance"],
                 "schedule"=>true,
                 "sched_id"=>$row[0],
                 "date_sched" => $date_sched,
