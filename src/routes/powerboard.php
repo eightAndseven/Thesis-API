@@ -302,6 +302,7 @@ $app->get('/api/powerboard/socket_status/{socket}',function($request, $response)
         }elseif($count == 0){
             $socket_status["socket"] = array(
                 "socket"=>$socket_num,
+                "appliance"=>$appliance,
                 "schedule"=>false,
                 "socket_status"=>$read
             );
