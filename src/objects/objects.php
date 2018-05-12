@@ -377,6 +377,7 @@ class Socket{
     public $socket_read;
     public $socket_switch;
     public $brightness;
+    public $appliance;
 
     /**
      * Socket Constructor
@@ -439,6 +440,9 @@ class Socket{
         }
     }
 
+    /**
+     * function to get appliance
+     */
     function getAppliance(){
         try{
             $sql = "SELECT appliance FROM $this->table_name WHERE id=" . $this->socket_id;

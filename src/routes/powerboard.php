@@ -903,3 +903,42 @@ $app->get('/api/powerboard/light_socket', function($request, $response){
         ->write(json_encode($message_arr));
     }
 }); 
+
+/**
+ * function to get device identified from db
+ */
+$app->get('/api/powerboard/get_appliance/{socket}', function($request, $response){
+    //get request parameter
+    $socket_id = $request->getAttribute('socket');
+    $date_time = date('Y-m-d H:i:s');
+
+    $db = new Database();
+    $db = $db->connectDB();
+
+    $socket = new Socket($db);
+    $socket->socket_id = $socket_id;
+    $stmt = $socket->getAppliance();
+    $count = $stmt->rowCount();
+    if($count == 1){
+        $socket->appliance = $stmt->fetch()['appliance'];
+        $socket_arr['socket'] = array(
+            "socket"=>$socket->socket_id,
+            "appliance"=>$socket->appliance
+        );
+        $message_arr['response'] = array(
+            "success"=> true,
+            "date_time" => $date_time,
+            "message" => "Device identified is $socket->appaliance" 
+        );
+        return $response->withHeader('Content-Type', 'application/json')
+        ->write(json_encode(array_merge($message_arr, $socket_arr)));
+    }else{
+        $message_arr['response'] = array(
+            "success" => false,
+            "date_time" => $date_time,
+            "message" => "Bad Request"
+        );
+        return $response->withHeader('Content-Type', 'application/json')
+        ->write(json_encode($message_arr));
+    }
+});
