@@ -548,6 +548,15 @@ class Socket{
             return "ERROR";
         }
     }
+
+    /**
+     * function to run a server side script for device identification
+     */
+    function getDeviceIdentified(){
+        $script = "> sudo python2 /usr/scripts/Pithon/prod/predict_socket.py ".$this->socket_id." &";
+        exec($script);
+        return true;
+    }
 }
 
 /**

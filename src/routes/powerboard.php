@@ -364,6 +364,10 @@ $app->post('/api/powerboard/switch_socket',function($request, $response){
         $activity->user_activity = $msg;
         $save_activity = $activity->saveActivity();
         
+        if($socket->socket_switch === "on"){
+            $dummy = $socket->getDeviceIdentified();
+        }
+
         if($save_activity){
             $socket_arr["socket"] = array(
                 "socket" => $socket->socket_id,
