@@ -834,12 +834,6 @@ $app->post('/api/powerboard/change_brightness', function($request, $response){
         $save_activity = $activity->saveActivity();
 
         if($socket->changeBrightnessDB()){
-            $activity = new Activity($db);
-            $activity->user_id = $user_id;
-            $activity->user_username = $user_username;
-            $activity->date_time = $date_time;
-            $activity->user_activity = $socket_message;
-            $save_activity = $activity->saveActivity();
             $socket_arr['dimlight'] = array(
                 "socket" => "Dimmer",
                 "brightness" => $socket->brightness
