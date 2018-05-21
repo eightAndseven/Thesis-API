@@ -511,7 +511,7 @@ class Socket{
      * function to change brightness of dimmer
      */
     function changeBrightness(){
-        $python_exec = "sudo python2 /usr/scripts/Pithon/prod/dim_lights.py ". $this->brightness;
+        $python_exec = "sudo python /usr/scripts/Pithon/prod/dim_incandescent.py ". $this->brightness;
         system($python_exec);
         $status = "Change brightness of dimmer at ".$this->brightness."%";
         return $status;
